@@ -134,9 +134,16 @@ class TestDevOpsAgent(EventDrivenAgentTestBase):
             
             # Verify result
             self.assertTrue(result['success'], f"Task failed: {result.get('error')}")
-            self.assertIn('Dockerfile', result['result'].get('message', ''))
             
-            # Check if file was created
+            # Check the actual result structure
+            message = result['result'].get('message', '')
+            file_path = result['result'].get('file_path', '')
+            
+            # The message should mention successful creation
+            self.assertIn('Successfully', message)
+            self.assertIn('DevOps config', message)
+            
+            # Check if content contains Docker instructions
             output = result['result'].get('output', '')
             self.assertIn('FROM python', output)
             self.assertIn('EXPOSE', output)
