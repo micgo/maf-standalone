@@ -1,0 +1,37 @@
+{
+    "project_name": "My Project",
+    "project_root": ".",
+    "message_queue_dir": "message_queue",
+    "state_file": "project_state.json",
+    "event_bus": {
+        "type": "inmemory",
+        "kafka_config": {
+            "bootstrap_servers": ["localhost:9092"],
+            "consumer_group": "multi-agent-framework",
+            "max_workers": 10
+        }
+    },
+    "agents": {
+        "model_provider": "gemini",
+        "model_name": "gemini-2.0-flash-exp",
+        "enabled_agents": [
+            "orchestrator",
+            "frontend",
+            "backend",
+            "database",
+            "security",
+            "qa",
+            "devops",
+            "docs",
+            "ux_ui"
+        ]
+    },
+    "retry_config": {
+        "max_attempts": 3,
+        "delay_seconds": 5
+    },
+    "task_config": {
+        "timeout_minutes": 30,
+        "max_concurrent_per_agent": 1
+    }
+}

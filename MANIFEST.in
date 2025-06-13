@@ -1,0 +1,13 @@
+include README.md
+include LICENSE
+include requirements.txt
+include pyproject.toml
+recursive-include multi_agent_framework *.py
+recursive-include multi_agent_framework *.md
+recursive-include multi_agent_framework/docs *.md
+recursive-include multi_agent_framework/examples *.py
+global-exclude *.pyc
+global-exclude __pycache__
+global-exclude .DS_Store
+prune multi_agent_framework/venv
+prune multi_agent_framework/message_queue
