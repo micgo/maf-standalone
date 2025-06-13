@@ -8,7 +8,13 @@ The Multi-Agent Framework (MAF) is a Python-based framework that orchestrates mu
 
 ## Features
 
-- **Specialized AI Agents**: Frontend, Backend, Database, QA, Security, DevOps, Documentation, and UX/UI agents
+- **Specialized AI Agents**: 9 specialized agents working in harmony:
+  - Frontend, Backend, Database agents for core development
+  - QA agent for testing and quality assurance
+  - Security agent for vulnerability detection and secure coding
+  - DevOps agent for deployment and infrastructure
+  - Documentation agent for comprehensive docs
+  - UX/UI agent for design systems and styling
 - **Event-Driven Architecture**: Efficient publish/subscribe communication between agents
 - **Intelligent Code Integration**: Smart file placement and code consolidation
 - **Project Type Detection**: Automatically detects and adapts to different project types (Next.js, React, Django, etc.)

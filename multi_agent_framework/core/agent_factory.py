@@ -47,12 +47,12 @@ class AgentFactory:
             'event_driven': ('multi_agent_framework.agents.event_driven_security_agent', 'EventDrivenSecurityAgent')
         },
         'devops': {
-            'polling': ('multi_agent_framework.agents.specialized.devops_agent', 'DevOpsInfrastructureAgent'),
+            'polling': ('multi_agent_framework.agents.specialized.devops_agent', 'DevopsAgent'),
             'event_driven': ('multi_agent_framework.agents.event_driven_devops_agent', 'EventDrivenDevOpsAgent')
         },
         'docs': {
             'polling': ('multi_agent_framework.agents.specialized.docs_agent', 'DocumentationAgent'),
-            'event_driven': ('multi_agent_framework.agents.event_driven_docs_agent', 'EventDrivenDocumentationAgent')
+            'event_driven': ('multi_agent_framework.agents.event_driven_docs_agent', 'EventDrivenDocsAgent')
         },
         'ux_ui': {
             'polling': ('multi_agent_framework.agents.specialized.ux_ui_agent', 'UXUIDesignAgent'),
