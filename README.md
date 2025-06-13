@@ -336,7 +336,7 @@ MIT License - see LICENSE file for details
 ## Support
 
 - GitHub Issues: [Report bugs and request features](https://github.com/micgo/maf-standalone/issues)
-- Documentation: [Full documentation](https://github.com/micgo/maf-standalone/wiki)
+- Wiki: [Full documentation](https://github.com/micgo/maf-standalone/wiki)
 - Discussions: [Join the conversation](https://github.com/micgo/maf-standalone/discussions)
 
 ## Acknowledgments
