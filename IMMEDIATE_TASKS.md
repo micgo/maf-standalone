@@ -1,31 +1,44 @@
 # Immediate Tasks for MAF Development
 
-Based on the testing session and codebase analysis, here are the most critical tasks to address:
+**Last Updated**: January 13, 2025
+
+## ✨ Recently Completed (v0.1.1)
+
+- ✅ **Fixed Event-Driven Mode**: Agents now process inbox messages on startup
+- ✅ **Implemented All Event-Driven Agents**: QA, DevOps, Security, Docs, UX/UI
+- ✅ **Added Comprehensive Tests**: TDD approach with full test coverage
+- ✅ **Fixed Agent Factory Mappings**: All agents instantiate correctly
+- ✅ **Updated Documentation**: README, Wiki pages, and CHANGELOG
+
+---
+
+Based on the testing session and codebase analysis, here are the remaining tasks to address:
 
 ## 🚨 Critical Fixes (Within 1 Week)
 
-### 1. Fix Event-Driven Inbox Processing
+### 1. ✅ Fix Event-Driven Inbox Processing
+**Status**: COMPLETED
 **Issue**: Event-driven agents don't process existing messages in inbox on startup
-**Impact**: Forces users to use polling mode
-**Solution**: 
-- Add inbox processing in `EventDrivenBaseAgent.start()`
+**Solution Implemented**: 
+- Added `_process_inbox_messages()` in `EventDrivenBaseAgent.start()`
 - Convert inbox messages to events on agent startup
-- Clear inbox after processing
+- Process all pending messages before entering main loop
 
-### 2. Fix CLI Import Error
-**Issue**: Already fixed but needs testing
-**Status**: ✅ Fixed in commit 1bb3776
+### 2. ✅ Fix CLI Import Error
+**Status**: COMPLETED
+**Issue**: Fixed and tested
 **Action**: Add unit test to prevent regression
 
 ## 🔧 High Priority (Within 2 Weeks)
 
-### 3. Complete Missing Event-Driven Agents
-**Priority Order**:
-1. QA Agent - Essential for test generation
-2. DevOps Agent - Needed for deployment setup
-3. Docs Agent - Important for documentation
-4. Security Agent - Critical for production code
-5. UX/UI Agent - Enhances frontend development
+### 3. ✅ Complete Missing Event-Driven Agents
+**Status**: COMPLETED
+All 5 missing agents have been implemented:
+1. ✅ QA Agent - Test generation and execution
+2. ✅ DevOps Agent - Docker, CI/CD, deployment configs
+3. ✅ Docs Agent - API docs, READMEs, guides
+4. ✅ Security Agent - Vulnerability scanning, audits
+5. ✅ UX/UI Agent - Design systems, styling
 
 ### 4. Add Kafka Dependency
 **File**: `requirements.txt`

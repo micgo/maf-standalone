@@ -4,58 +4,59 @@
 
 This roadmap outlines the development priorities for the Multi-Agent Framework (MAF) to evolve from a functional prototype to a production-ready autonomous development system.
 
-## Current State (v0.1.0)
+## Current State (v0.1.1)
 
 ### ✅ Completed
 - Core event-driven architecture with in-memory event bus
-- 4 of 9 agents implemented in event-driven mode (orchestrator, frontend, backend, database)
+- **All 9 agents implemented in event-driven mode** ✅
 - All agents available in polling mode
 - Basic CLI functionality
 - Multi-model provider support (Gemini, OpenAI, Anthropic)
 - Project type auto-detection
 - Smart code integration and file management
+- **Fixed event-driven inbox message processing** ✅
+- **Comprehensive test suite for event-driven agents** ✅
 
 ### ⚠️ Gaps
-- 5 agents missing event-driven implementations
-- Event-driven mode not processing inbox messages on startup
-- Incomplete Kafka integration
-- Limited test coverage
+- Incomplete Kafka integration (kafka-python dependency missing)
+- Limited integration test coverage
 - No production deployment features
+- No real-time monitoring dashboard
 
 ## Phase 1: Core Completion (Q1 2025)
 
-### 1.1 Complete Event-Driven Agent Implementations
-**Priority: High | Timeline: 4 weeks**
+### 1.1 ✅ Complete Event-Driven Agent Implementations
+**Status: COMPLETED**
 
-- [ ] Implement `event_driven_qa_agent.py`
-  - Port QA agent logic to event-driven architecture
-  - Add test generation and execution capabilities
-  - Integrate with popular testing frameworks
+- [x] Implement `event_driven_qa_agent.py`
+  - Ported QA agent logic to event-driven architecture
+  - Added test generation and execution capabilities
+  - Integrated with popular testing frameworks
   
-- [ ] Implement `event_driven_security_agent.py`
+- [x] Implement `event_driven_security_agent.py`
   - Security vulnerability scanning
   - Authentication/authorization review
   - OWASP compliance checks
   
-- [ ] Implement `event_driven_devops_agent.py`
+- [x] Implement `event_driven_devops_agent.py`
   - CI/CD pipeline generation
   - Docker/Kubernetes configuration
   - Infrastructure as Code support
   
-- [ ] Implement `event_driven_docs_agent.py`
+- [x] Implement `event_driven_docs_agent.py`
   - API documentation generation
   - README updates
   - Code comment generation
   
-- [ ] Implement `event_driven_ux_ui_agent.py`
+- [x] Implement `event_driven_ux_ui_agent.py`
   - Design system integration
   - Component mockup generation
   - Accessibility compliance
 
-### 1.2 Fix Event-Driven Message Processing
-**Priority: Critical | Timeline: 1 week**
+### 1.2 ✅ Fix Event-Driven Message Processing
+**Status: COMPLETED**
 
-- [ ] Add inbox processing on agent startup
+- [x] Add inbox processing on agent startup
 - [ ] Implement message queue persistence for event bus
 - [ ] Add retry mechanism for failed event processing
 - [ ] Create migration tool from polling to event-driven mode
