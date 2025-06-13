@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from multi_agent_framework.core.project_config import ProjectConfig
 from multi_agent_framework.core.message_bus_configurable import MessageBus
-from multi_agent_framework.core.agent_factory import create_agent, get_available_agents
+from multi_agent_framework.core.agent_factory import create_agent, AgentFactory
 from multi_agent_framework import config
 
 
