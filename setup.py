@@ -20,7 +20,7 @@ setup(
     description="A flexible multi-agent framework for collaborative software development",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/multi-agent-framework",
+    url="https://github.com/micgo/maf-standalone",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",

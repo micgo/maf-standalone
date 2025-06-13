@@ -33,8 +33,8 @@ pip install multi-agent-framework
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/multi-agent-framework.git
-cd multi-agent-framework
+git clone https://github.com/micgo/maf-standalone.git
+cd maf-standalone
 ```
 
 2. Create a virtual environment:
@@ -335,9 +335,9 @@ MIT License - see LICENSE file for details
 
 ## Support
 
-- GitHub Issues: [Report bugs and request features](https://github.com/yourusername/multi-agent-framework/issues)
-- Documentation: [Full documentation](https://docs.multi-agent-framework.dev)
-- Discord: [Join our community](https://discord.gg/maf-community)
+- GitHub Issues: [Report bugs and request features](https://github.com/micgo/maf-standalone/issues)
+- Documentation: [Full documentation](https://github.com/micgo/maf-standalone/wiki)
+- Discussions: [Join the conversation](https://github.com/micgo/maf-standalone/discussions)
 
 ## Acknowledgments
 

@@ -51,6 +51,9 @@ message_queue/
 project_state.json
 .maf-config.json
 .env
+.maf_state.json
+.maf_messages/
+.maf_logs/
 
 # Documentation
 docs/_build/
