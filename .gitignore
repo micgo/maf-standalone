@@ -58,6 +58,7 @@ project_state.json
 # Documentation
 docs/_build/
 site/
+wiki/
 
 # Logs
 *.log
