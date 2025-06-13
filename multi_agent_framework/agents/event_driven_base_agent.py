@@ -49,6 +49,9 @@ class EventDrivenBaseAgent(BaseAgent):
         # Start heartbeat
         self._start_heartbeat()
         
+        # Process any existing messages in inbox
+        self._process_inbox_messages()
+        
         # Publish agent started event
         self.event_bus.publish(Event(
             id=f"{self.name}-started-{time.time()}",
@@ -59,6 +62,89 @@ class EventDrivenBaseAgent(BaseAgent):
         ))
         
         print(f"{self.name}: Started in event-driven mode")
+        
+    def _process_inbox_messages(self):
+        """Process any existing messages in the agent's inbox"""
+        from ..core.message_bus_configurable import MessageBus
+        
+        # Get message directory from project config
+        message_dir = None
+        if hasattr(self, 'project_config') and self.project_config:
+            message_dir = self.project_config.get_message_queue_dir()
+        
+        # Create message bus instance
+        message_bus = MessageBus(message_dir)
+        
+        # Receive messages from inbox
+        messages = message_bus.receive_messages(self.name)
+        
+        if messages:
+            print(f"{self.name}: Processing {len(messages)} inbox messages...")
+            
+            for msg in messages:
+                # Convert inbox message to appropriate event
+                self._convert_inbox_message_to_event(msg)
+                
+    def _convert_inbox_message_to_event(self, message: Dict[str, Any]):
+        """Convert an inbox message to an event and publish it"""
+        msg_type = message.get('type', '')
+        
+        # Handle orchestrator messages
+        if self.name == 'orchestrator':
+            if msg_type == 'new_feature':
+                # Convert to FEATURE_CREATED event
+                event = Event(
+                    id=f"inbox-{self.name}-{time.time()}",
+                    type=EventType.FEATURE_CREATED,
+                    source=message.get('sender', 'cli'),
+                    timestamp=time.time(),
+                    data={
+                        'feature_id': f"feature_{int(message.get('timestamp', time.time()))}",
+                        'description': message.get('content', ''),
+                        'target': self.name,
+                        'from_inbox': True
+                    }
+                )
+                self.event_bus.publish(event)
+                print(f"{self.name}: Converted inbox message to FEATURE_CREATED event")
+                
+        # Handle task assignments for other agents
+        elif msg_type == 'task_assignment':
+            task_data = message.get('task', {})
+            event = Event(
+                id=f"inbox-{self.name}-{time.time()}",
+                type=EventType.TASK_ASSIGNED,
+                source=message.get('sender', 'orchestrator'),
+                timestamp=time.time(),
+                data={
+                    'task_id': task_data.get('id'),
+                    'description': task_data.get('description'),
+                    'assigned_agent': self.name,
+                    'feature_id': task_data.get('feature_id'),
+                    'target': self.name,
+                    'from_inbox': True
+                }
+            )
+            self.event_bus.publish(event)
+            print(f"{self.name}: Converted inbox message to TASK_ASSIGNED event")
+            
+        # Handle other message types as CUSTOM events
+        else:
+            event = Event(
+                id=f"inbox-{self.name}-{time.time()}",
+                type=EventType.CUSTOM,
+                source=message.get('sender', 'unknown'),
+                timestamp=time.time(),
+                data={
+                    'message_type': msg_type,
+                    'content': message.get('content'),
+                    'original_message': message,
+                    'target': self.name,
+                    'from_inbox': True
+                }
+            )
+            self.event_bus.publish(event)
+            print(f"{self.name}: Converted inbox message to CUSTOM event")
         
     def stop(self):
         """Stop the agent"""

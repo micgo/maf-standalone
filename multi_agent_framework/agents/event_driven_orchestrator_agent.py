@@ -275,11 +275,12 @@ class EventDrivenOrchestratorAgent(EventDrivenBaseAgent):
     
     def _handle_custom_event(self, event: Event):
         """Handle custom events like new feature requests"""
-        print(f"Orchestrator: Received CUSTOM event with event_name: {event.data.get('event_name')}")
+        print(f"Orchestrator: Received CUSTOM event with event_name: {event.data.get('event_name')}, message_type: {event.data.get('message_type')}")
         try:
-            if event.data.get('event_name') == 'new_feature_request':
+            # Handle new feature requests (from event_name or message_type)
+            if event.data.get('event_name') == 'new_feature_request' or event.data.get('message_type') == 'new_feature':
                 # Create a new feature
-                feature_description = event.data.get('description', '')
+                feature_description = event.data.get('description', '') or event.data.get('content', '')
                 if feature_description:
                     feature_id = str(uuid.uuid4())
                     
