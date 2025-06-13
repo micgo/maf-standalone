@@ -50,6 +50,8 @@ pip install -e .
 
 ## Quick Start
 
+> 📚 **[View the detailed Quick Start Guide](docs/QUICK_START.md)** for step-by-step instructions with examples!
+
 ### 1. Initialize a Project
 
 Navigate to your project directory and initialize MAF:
