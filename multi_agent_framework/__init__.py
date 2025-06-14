@@ -2,7 +2,7 @@
 Multi-Agent Framework for automated project development.
 
 This framework coordinates multiple specialized agents to handle different aspects
-of software development including backend, frontend, database, DevOps, QA, 
+of software development including backend, frontend, database, DevOps, QA,
 documentation, security, and UX/UI tasks.
 """
 
@@ -14,7 +14,7 @@ from .core.file_integrator import FileIntegrator
 __version__ = "1.0.0"
 __all__ = [
     "MessageBus",
-    "initialize_agent_inboxes", 
+    "initialize_agent_inboxes",
     "ProjectStateManager",
     "ProjectAnalyzer",
     "FileIntegrator"
