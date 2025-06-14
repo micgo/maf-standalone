@@ -14,6 +14,7 @@ from ..core.event_bus_interface import Event, EventType
 from ..core.event_bus_factory import get_event_bus
 from .. import config
 from .base_agent_configurable import BaseAgent
+from ..core.error_handler import error_handler, ErrorCategory, ErrorLevel, handle_task_error
 
 
 class EventDrivenBaseAgent(BaseAgent):
@@ -236,8 +237,10 @@ class EventDrivenBaseAgent(BaseAgent):
             self.state_manager.update_task_status(task_id, "completed", result)
             
         except Exception as e:
-            error_msg = f"Error processing task: {str(e)}"
-            print(f"{self.name}: {error_msg}")
+            # Use centralized error handler
+            handle_task_error(e, task_id, f"Task processing failed in {self.name}")
+            
+            error_msg = str(e)
             
             # Publish failure event
             self.event_bus.publish_task_event(

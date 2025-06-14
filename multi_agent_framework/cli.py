@@ -21,6 +21,7 @@ from multi_agent_framework.core.project_config import ProjectConfig
 from multi_agent_framework.core.message_bus_configurable import MessageBus
 from multi_agent_framework.core.agent_factory import create_agent, AgentFactory
 from multi_agent_framework import config
+from multi_agent_framework.core.error_handler import error_handler, ErrorCategory, ErrorLevel
 
 
 @click.group()
@@ -98,7 +99,12 @@ def launch(project: Optional[str], agents: tuple, mode: str):
     # Check for .env file
     env_path = os.path.join(project_path, '.env')
     if not os.path.exists(env_path):
-        click.echo("\n❌ Error: .env file not found!")
+        error_handler.handle_error(
+            FileNotFoundError(".env file not found"),
+            ErrorCategory.FILE_SYSTEM,
+            {'file_path': env_path},
+            ErrorLevel.ERROR
+        )
         click.echo("   Copy .env.example to .env and add your API keys")
         sys.exit(1)
     
@@ -139,7 +145,12 @@ def launch(project: Optional[str], agents: tuple, mode: str):
             click.echo(f"✓ Started {agent_name}")
             
         except Exception as e:
-            click.echo(f"✗ Failed to start {agent_name}: {e}")
+            error_handler.handle_error(
+                e,
+                ErrorCategory.AGENT_COMMUNICATION,
+                {'agent_name': agent_name, 'details': 'during startup'},
+                ErrorLevel.ERROR
+            )
     
     if threads:
         click.echo("\n✅ Agents are running. Press Ctrl+C to stop...")

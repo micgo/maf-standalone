@@ -16,6 +16,7 @@ from core.project_analyzer import ProjectAnalyzer
 from core.file_integrator import FileIntegrator
 from core.intelligent_namer import IntelligentNamer
 from core.smart_integrator import SmartIntegrator
+from core.error_handler import error_handler, ErrorCategory, ErrorLevel, handle_api_key_error, handle_task_error
 
 load_dotenv() # Load environment variables from .env file
 
@@ -41,7 +42,17 @@ class BaseAgent(ABC):
             self.model_name = model_name
             self.llm = self._initialize_llm()
         except Exception as e:
-            print(f"CRITICAL ERROR: BaseAgent '{name}' failed to initialize LLM: {e}")
+            # Check if it's an API key error
+            error_str = str(e).lower()
+            if 'api' in error_str and 'key' in error_str:
+                handle_api_key_error(e, self.model_provider, self._get_api_key_name())
+            else:
+                error_handler.handle_error(
+                    e, 
+                    ErrorCategory.CONFIGURATION,
+                    {'agent': name, 'provider': model_provider, 'model': model_name},
+                    ErrorLevel.CRITICAL
+                )
             raise # Re-raise to ensure the error is propagated if not explicitly handled higher up
 
     def send_message(self, recipient_agent: str, task_id: str, content: str, msg_type: str = "task"):
@@ -63,27 +74,34 @@ class BaseAgent(ABC):
         """Main loop for the agent to receive and process messages."""
         pass
 
+    def _get_api_key_name(self):
+        """Get the API key environment variable name for the current provider."""
+        key_names = {
+            "claude": "ANTHROPIC_API_KEY",
+            "gemini": "GEMINI_API_KEY", 
+            "openai": "OPENAI_API_KEY"
+        }
+        return key_names.get(self.model_provider, "API_KEY")
+    
     def _initialize_llm(self):
+        key_name = self._get_api_key_name()
+        
         if self.model_provider == "claude":
             api_key = os.getenv("ANTHROPIC_API_KEY")
             if not api_key:
-                print("ERROR: ANTHROPIC_API_KEY environment variable not set.")
                 raise ValueError("ANTHROPIC_API_KEY environment variable not set.")
             return anthropic.Anthropic(api_key=api_key)
         elif self.model_provider == "gemini":
             api_key = os.getenv("GEMINI_API_KEY")
             if not api_key:
-                print("ERROR: GEMINI_API_KEY environment variable not set.")
                 raise ValueError("GEMINI_API_KEY environment variable not set.")
             return genai.Client(api_key=api_key)
         elif self.model_provider == "openai":
             api_key = os.getenv("OPENAI_API_KEY")
             if not api_key:
-                print("ERROR: OPENAI_API_KEY environment variable not set.")
                 raise ValueError("OPENAI_API_KEY environment variable not set.")
             return openai.OpenAI(api_key=api_key)
         else:
-            print(f"ERROR: Unsupported model provider: {self.model_provider}")
             raise ValueError(f"Unsupported model provider: {self.model_provider}")
         
     def _generate_response(self, prompt, max_tokens=1000):
@@ -102,7 +120,7 @@ class BaseAgent(ABC):
                 )
                 return response.content[0].text
             except Exception as e:
-                print(f"Error calling Claude: {e}")
+                self._handle_llm_error(e, "Claude")
                 return None
         elif self.model_provider == "gemini":
             try:
@@ -112,7 +130,7 @@ class BaseAgent(ABC):
                 )
                 return response.text
             except Exception as e:
-                print(f"Error calling Gemini: {e}")
+                self._handle_llm_error(e, "Gemini")
                 return None
         elif self.model_provider == "openai":
             try:
@@ -125,9 +143,45 @@ class BaseAgent(ABC):
                 )
                 return response.choices[0].message.content
             except Exception as e:
-                print(f"Error calling OpenAI: {e}")
+                self._handle_llm_error(e, "OpenAI")
                 return None
         return None
+    
+    def _handle_llm_error(self, error: Exception, provider: str):
+        """Handle errors from LLM API calls with user-friendly messages."""
+        error_str = str(error).lower()
+        
+        # Check for specific error types
+        if 'rate limit' in error_str or '429' in error_str:
+            error_handler.handle_error(
+                error,
+                ErrorCategory.NETWORK,
+                {'service': provider, 'wait_time': 60},
+                ErrorLevel.WARNING
+            )
+        elif 'timeout' in error_str:
+            error_handler.handle_error(
+                error,
+                ErrorCategory.NETWORK,
+                {'service': provider},
+                ErrorLevel.WARNING
+            )
+        elif 'api key' in error_str or 'unauthorized' in error_str or '401' in error_str:
+            handle_api_key_error(error, provider.lower(), self._get_api_key_name())
+        elif 'connection' in error_str or 'network' in error_str:
+            error_handler.handle_error(
+                error,
+                ErrorCategory.NETWORK,
+                {'service': provider},
+                ErrorLevel.ERROR
+            )
+        else:
+            error_handler.handle_error(
+                error,
+                ErrorCategory.SYSTEM,
+                {'details': f"Failed to call {provider} API", 'error': str(error)},
+                ErrorLevel.ERROR
+            )
 
     def get_integration_strategy(self, task_description: str, file_type: str = None):
         """Determine the best integration strategy for a task."""

@@ -18,6 +18,7 @@ from ..core.shared_state_manager import get_shared_state_manager
 from ..core.project_analyzer import ProjectAnalyzer
 from ..core.file_integrator import FileIntegrator
 from ..core.intelligent_namer import IntelligentNamer
+from ..core.error_handler import error_handler, ErrorCategory, ErrorLevel, handle_api_key_error, handle_task_error
 from ..core.smart_integrator import SmartIntegrator
 from ..core.project_config import ProjectConfig
 
@@ -68,7 +69,17 @@ class BaseAgent(ABC):
             self.model_name = model_name
             self.llm = self._initialize_llm()
         except Exception as e:
-            print(f"CRITICAL ERROR: BaseAgent '{name}' failed to initialize LLM: {e}")
+            # Check if it's an API key error
+            error_str = str(e).lower()
+            if 'api' in error_str and 'key' in error_str:
+                handle_api_key_error(e, self.model_provider, self._get_api_key_name())
+            else:
+                error_handler.handle_error(
+                    e, 
+                    ErrorCategory.CONFIGURATION,
+                    {'agent': name, 'provider': model_provider, 'model': model_name},
+                    ErrorLevel.CRITICAL
+                )
             raise
     
     def send_message(self, recipient_agent: str, task_id: str, content: str, msg_type: str = "task"):
@@ -91,6 +102,15 @@ class BaseAgent(ABC):
     def run(self):
         """Main loop for the agent to receive and process messages."""
         pass
+    
+    def _get_api_key_name(self):
+        """Get the API key environment variable name for the current provider."""
+        key_names = {
+            "claude": "ANTHROPIC_API_KEY",
+            "gemini": "GEMINI_API_KEY", 
+            "openai": "OPENAI_API_KEY"
+        }
+        return key_names.get(self.model_provider, "API_KEY")
     
     def _initialize_llm(self):
         """Initialize the LLM based on provider."""
@@ -132,7 +152,7 @@ class BaseAgent(ABC):
                 )
                 return response.content[0].text
             except Exception as e:
-                print(f"Error calling Claude: {e}")
+                self._handle_llm_error(e, "Claude")
                 return None
                 
         elif self.model_provider == "gemini":
@@ -143,7 +163,7 @@ class BaseAgent(ABC):
                 )
                 return response.text
             except Exception as e:
-                print(f"Error calling Gemini: {e}")
+                self._handle_llm_error(e, "Gemini")
                 return None
                 
         elif self.model_provider == "openai":
@@ -157,10 +177,46 @@ class BaseAgent(ABC):
                 )
                 return response.choices[0].message.content
             except Exception as e:
-                print(f"Error calling OpenAI: {e}")
+                self._handle_llm_error(e, "OpenAI")
                 return None
                 
         return None
+    
+    def _handle_llm_error(self, error: Exception, provider: str):
+        """Handle errors from LLM API calls with user-friendly messages."""
+        error_str = str(error).lower()
+        
+        # Check for specific error types
+        if 'rate limit' in error_str or '429' in error_str:
+            error_handler.handle_error(
+                error,
+                ErrorCategory.NETWORK,
+                {'service': provider, 'wait_time': 60},
+                ErrorLevel.WARNING
+            )
+        elif 'timeout' in error_str:
+            error_handler.handle_error(
+                error,
+                ErrorCategory.NETWORK,
+                {'service': provider},
+                ErrorLevel.WARNING
+            )
+        elif 'api key' in error_str or 'unauthorized' in error_str or '401' in error_str:
+            handle_api_key_error(error, provider.lower(), self._get_api_key_name())
+        elif 'connection' in error_str or 'network' in error_str:
+            error_handler.handle_error(
+                error,
+                ErrorCategory.NETWORK,
+                {'service': provider},
+                ErrorLevel.ERROR
+            )
+        else:
+            error_handler.handle_error(
+                error,
+                ErrorCategory.SYSTEM,
+                {'details': f"Failed to call {provider} API", 'error': str(error)},
+                ErrorLevel.ERROR
+            )
     
     def get_integration_strategy(self, task_description: str, file_type: str = None):
         """Determine the best integration strategy for a task."""
