@@ -11,7 +11,7 @@ from typing import Optional
 from dotenv import load_dotenv
 import openai
 import anthropic
-import google.generativeai as genai
+import google.genai as genai
 
 from ..core.message_bus_configurable import MessageBus
 from ..core.shared_state_manager import get_shared_state_manager
@@ -104,8 +104,7 @@ class BaseAgent(ABC):
             api_key = os.getenv("GEMINI_API_KEY")
             if not api_key:
                 raise ValueError("GEMINI_API_KEY environment variable not set.")
-            genai.configure(api_key=api_key)
-            return genai.GenerativeModel(self.model_name)
+            return genai.Client(api_key=api_key)
             
         elif self.model_provider == "openai":
             api_key = os.getenv("OPENAI_API_KEY")
@@ -138,7 +137,10 @@ class BaseAgent(ABC):
                 
         elif self.model_provider == "gemini":
             try:
-                response = self.llm.generate_content(prompt)
+                response = self.llm.models.generate_content(
+                    model=self.model_name,
+                    contents=prompt
+                )
                 return response.text
             except Exception as e:
                 print(f"Error calling Gemini: {e}")

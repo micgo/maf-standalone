@@ -1,6 +1,6 @@
 # Multi-Agent Framework (MAF)
 
-[![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/downloads/)
+[![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Coverage Status](https://coveralls.io/repos/github/micgo/maf-standalone/badge.svg?branch=main)](https://coveralls.io/github/micgo/maf-standalone?branch=main)
 [![Tests](https://github.com/micgo/maf-standalone/workflows/Coveralls/badge.svg)](https://github.com/micgo/maf-standalone/actions)
@@ -73,7 +73,7 @@ The Multi-Agent Framework (MAF) is a Python-based framework that orchestrates mu
 
 ### Prerequisites
 
-- ![Python](https://img.shields.io/badge/Python-3.9%2B-blue?style=flat&logo=python&logoColor=white) Python 3.9 or higher
+- ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=flat&logo=python&logoColor=white) Python 3.10 or higher
 - 📦 pip package manager
 - 🔑 At least one LLM API key (OpenAI, Anthropic, or Google Gemini)
 

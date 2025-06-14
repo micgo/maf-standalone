@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from dotenv import load_dotenv
 import openai
 import anthropic
-import google.generativeai as genai
+import google.genai as genai
 import sys
 # Add parent directory to path to find core modules
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -75,8 +75,7 @@ class BaseAgent(ABC):
             if not api_key:
                 print("ERROR: GEMINI_API_KEY environment variable not set.")
                 raise ValueError("GEMINI_API_KEY environment variable not set.")
-            genai.configure(api_key=api_key)
-            return genai.GenerativeModel(self.model_name)
+            return genai.Client(api_key=api_key)
         elif self.model_provider == "openai":
             api_key = os.getenv("OPENAI_API_KEY")
             if not api_key:
@@ -107,7 +106,10 @@ class BaseAgent(ABC):
                 return None
         elif self.model_provider == "gemini":
             try:
-                response = self.llm.generate_content(prompt)
+                response = self.llm.models.generate_content(
+                    model=self.model_name,
+                    contents=prompt
+                )
                 return response.text
             except Exception as e:
                 print(f"Error calling Gemini: {e}")

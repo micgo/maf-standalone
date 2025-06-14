@@ -4,7 +4,7 @@ Get up and running with the Multi-Agent Framework in 5 minutes!
 
 ## Prerequisites
 
-- Python 3.9 or higher
+- Python 3.10 or higher
 - pip package manager
 - At least one API key from:
   - [Google Gemini](https://makersuite.google.com/app/apikey) (Recommended)
