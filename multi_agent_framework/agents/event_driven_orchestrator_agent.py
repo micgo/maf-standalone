@@ -15,6 +15,7 @@ from typing import Dict, Any, List, Optional
 from .. import config
 from .event_driven_base_agent import EventDrivenBaseAgent
 from ..core.event_bus_interface import Event, EventType
+from ..core.progress_tracker import get_progress_tracker
 
 
 class EventDrivenOrchestratorAgent(EventDrivenBaseAgent):
@@ -38,6 +39,10 @@ class EventDrivenOrchestratorAgent(EventDrivenBaseAgent):
         # Recovery tracking
         self._last_health_check = datetime.now()
         self._last_recovery_check = datetime.now()
+        
+        # Initialize progress tracker
+        state_file = os.path.join(project_config.project_root, ".maf/state.json") if project_config else ".maf/state.json"
+        self.progress_tracker = get_progress_tracker(state_file)
     
     def _subscribe_to_events(self):
         """Subscribe to orchestrator-specific events"""
@@ -47,6 +52,7 @@ class EventDrivenOrchestratorAgent(EventDrivenBaseAgent):
         self.event_bus.subscribe(EventType.FEATURE_CREATED, self._handle_feature_created)
         
         # Task lifecycle
+        self.event_bus.subscribe(EventType.TASK_STARTED, self._handle_task_started)
         self.event_bus.subscribe(EventType.TASK_COMPLETED, self._handle_task_completed)
         self.event_bus.subscribe(EventType.TASK_FAILED, self._handle_task_failed)
         
@@ -72,6 +78,9 @@ class EventDrivenOrchestratorAgent(EventDrivenBaseAgent):
                 'created_at': event.timestamp,
                 'tasks': []
             }
+            
+            # Track in progress tracker
+            self.progress_tracker.create_feature(feature_id, description)
             
             print(f"Orchestrator: Processing new feature '{description}' (ID: {feature_id})")
             
@@ -147,6 +156,9 @@ class EventDrivenOrchestratorAgent(EventDrivenBaseAgent):
                         
                         self._features[feature_id]['tasks'].append(task_id)
                         
+                        # Track task in progress tracker
+                        self.progress_tracker.create_task(task_id, feature_id, description, agent)
+                        
                         # Publish task assignment event
                         self.event_bus.publish(Event(
                             id=f"assign-{task_id}",
@@ -195,6 +207,24 @@ class EventDrivenOrchestratorAgent(EventDrivenBaseAgent):
         
         return mappings.get(agent_name, agent_name)
     
+    def _handle_task_started(self, event: Event):
+        """Handle task started event"""
+        task_id = event.data.get('task_id')
+        if not task_id or task_id not in self._tasks:
+            return
+        
+        task = self._tasks[task_id]
+        task['status'] = 'in_progress'
+        task['started_at'] = event.timestamp
+        
+        print(f"Orchestrator: Task '{task['description']}' started by {event.source}")
+        
+        # Update progress tracker - task started, set to 10% progress
+        self.progress_tracker.update_task_status(task_id, 'in_progress', 10)
+        
+        # Update state manager
+        self.state_manager.update_task_status(task_id, "in_progress")
+    
     def _handle_task_completed(self, event: Event):
         """Handle task completion event"""
         task_id = event.data.get('task_id')
@@ -207,6 +237,9 @@ class EventDrivenOrchestratorAgent(EventDrivenBaseAgent):
         task['result'] = event.data.get('result')
         
         print(f"Orchestrator: Task '{task['description']}' completed by {event.source}")
+        
+        # Update progress tracker
+        self.progress_tracker.update_task_status(task_id, 'completed', 100)
         
         # Update state manager
         self.state_manager.update_task_status(task_id, "completed", task['result'])
@@ -254,6 +287,9 @@ class EventDrivenOrchestratorAgent(EventDrivenBaseAgent):
             
             print(f"Orchestrator: Task {task_id} permanently failed after {config.MAX_RETRY_ATTEMPTS} attempts")
             
+            # Update progress tracker
+            self.progress_tracker.update_task_status(task_id, 'failed', 0)
+            
             # Update state manager
             self.state_manager.update_task_status(
                 task_id, 
@@ -274,7 +310,26 @@ class EventDrivenOrchestratorAgent(EventDrivenBaseAgent):
         # Could implement agent restart logic here
     
     def _handle_custom_event(self, event: Event):
-        """Handle custom events like new feature requests"""
+        """Handle custom events like new feature requests and progress updates"""
+        event_type = event.data.get('event_type')
+        
+        # Handle task progress updates
+        if event_type == 'task_progress':
+            task_id = event.data.get('task_id')
+            progress = event.data.get('progress', 0)
+            message = event.data.get('message', '')
+            
+            if task_id and task_id in self._tasks:
+                task = self._tasks[task_id]
+                task['progress'] = progress
+                
+                # Update progress tracker
+                self.progress_tracker.update_task_status(task_id, 'in_progress', progress)
+                
+                if message:
+                    print(f"Orchestrator: Task {task_id} progress: {progress}% - {message}")
+            return
+        
         print(f"Orchestrator: Received CUSTOM event with event_name: {event.data.get('event_name')}, message_type: {event.data.get('message_type')}")
         try:
             # Handle new feature requests (from event_name or message_type)

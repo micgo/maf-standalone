@@ -219,11 +219,33 @@ class EventDrivenBaseAgent(BaseAgent):
             daemon=True
         ).start()
         
+    def report_progress(self, task_id: str, progress: int, message: str = None):
+        """Report task progress (0-100)"""
+        # Publish progress update event
+        self.event_bus.publish(Event(
+            id=f"progress-{task_id}-{time.time()}",
+            type=EventType.CUSTOM,
+            source=self.name,
+            timestamp=time.time(),
+            data={
+                'event_type': 'task_progress',
+                'task_id': task_id,
+                'progress': max(0, min(100, progress)),
+                'message': message
+            }
+        ))
+        
     def _process_task_safe(self, task_id: str, task_data: Dict[str, Any]):
         """Safely process a task with error handling"""
         try:
+            # Report task starting at 10%
+            self.report_progress(task_id, 10, "Starting task processing")
+            
             # Call the agent-specific task processing
             result = self.process_task(task_id, task_data)
+            
+            # Report task near completion
+            self.report_progress(task_id, 90, "Finalizing task")
             
             # Publish completion event
             self.event_bus.publish_task_event(

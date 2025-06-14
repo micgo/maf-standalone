@@ -22,6 +22,7 @@ from multi_agent_framework.core.message_bus_configurable import MessageBus
 from multi_agent_framework.core.agent_factory import create_agent, AgentFactory
 from multi_agent_framework import config
 from multi_agent_framework.core.error_handler import error_handler, ErrorCategory, ErrorLevel
+from multi_agent_framework.core.progress_tracker import get_progress_tracker
 
 
 @click.group()
@@ -166,7 +167,8 @@ def launch(project: Optional[str], agents: tuple, mode: str):
 @cli.command()
 @click.argument('feature_description')
 @click.option('--project', '-p', help='Project path (default: current directory)')
-def trigger(feature_description: str, project: Optional[str]):
+@click.option('--wait', '-w', is_flag=True, help='Wait and show progress')
+def trigger(feature_description: str, project: Optional[str], wait: bool):
     """Trigger development of a new feature."""
     project_path = project or os.getcwd()
     project_config = ProjectConfig(project_path)
@@ -188,7 +190,51 @@ def trigger(feature_description: str, project: Optional[str]):
     message_bus.send_message("orchestrator", message)
     
     click.echo("✅ Feature request sent to orchestrator")
-    click.echo("   Run 'maf status' to monitor progress")
+    
+    if wait:
+        click.echo("\n⏳ Waiting for agents to start processing...\n")
+        time.sleep(2)  # Give agents time to start
+        
+        # Show live progress
+        state_file = project_config.get_state_file_path()
+        progress_tracker = get_progress_tracker(state_file)
+        
+        try:
+            with click.progressbar(length=100, label='Overall Progress', show_eta=True) as bar:
+                last_progress = 0
+                no_progress_count = 0
+                
+                while last_progress < 100:
+                    # Get latest feature
+                    features = progress_tracker.get_all_features()
+                    if features:
+                        latest_feature = features[0]  # Most recent
+                        current_progress = latest_feature['feature']['progress']
+                        
+                        # Update bar
+                        if current_progress > last_progress:
+                            bar.update(current_progress - last_progress)
+                            last_progress = current_progress
+                            no_progress_count = 0
+                        else:
+                            no_progress_count += 1
+                            
+                        # Break if no progress for too long
+                        if no_progress_count > 60:  # 60 seconds
+                            click.echo("\n⚠️  No progress detected for 60 seconds")
+                            break
+                            
+                    time.sleep(1)
+                    
+            # Show final status
+            click.echo("\n")
+            progress_tracker.display_progress(detailed=True)
+            
+        except KeyboardInterrupt:
+            click.echo("\n\n⚠️  Progress monitoring interrupted")
+            click.echo("   Run 'maf status' to check progress")
+    else:
+        click.echo("   Run 'maf status' to monitor progress")
 
 
 @cli.command()
@@ -211,29 +257,22 @@ def status(project: Optional[str], detailed: bool):
         status = "✓" if count == 0 else f"📨 {count} messages"
         click.echo(f"   {agent}: {status}")
     
-    # Check state file
+    # Show progress using progress tracker
     state_file = project_config.get_state_file_path()
-    if os.path.exists(state_file):
-        try:
-            with open(state_file, 'r') as f:
-                state = json.load(f)
-            
-            features = state.get('features', {})
-            tasks = state.get('tasks', {})
-            
-            click.echo(f"\n📋 Project State:")
-            click.echo(f"   Features: {len(features)}")
-            click.echo(f"   Tasks: {len(tasks)}")
-            
-            if detailed and features:
-                click.echo(f"\n   Recent Features:")
-                for fid, feature in list(features.items())[-5:]:
-                    click.echo(f"     - {feature.get('description', 'Unknown')[:50]}...")
-                    click.echo(f"       Status: {feature.get('status', 'unknown')}")
-        except:
-            click.echo(f"\n⚠️  Could not read state file")
+    progress_tracker = get_progress_tracker(state_file)
+    
+    # Get feature counts
+    active, total = progress_tracker.get_active_features_count()
+    
+    if total > 0:
+        click.echo(f"\n📋 Development Progress:")
+        click.echo(f"   Active features: {active}")
+        click.echo(f"   Total features: {total}")
+        
+        # Show progress bars
+        progress_tracker.display_progress(detailed=detailed)
     else:
-        click.echo(f"\n📋 No project state found (framework not yet used)")
+        click.echo(f"\n📋 No features in progress (use 'maf trigger' to start)")
     
     # Check for running agents (basic check)
     click.echo(f"\n🤖 Agent Configuration:")
