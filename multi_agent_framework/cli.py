@@ -25,10 +25,37 @@ from multi_agent_framework.core.error_handler import error_handler, ErrorCategor
 from multi_agent_framework.core.progress_tracker import get_progress_tracker
 
 
+def _get_recommended_agents(project_type: str) -> list:
+    """Get recommended agents based on project type."""
+    base_agents = ['orchestrator']
+    
+    type_specific = {
+        'nextjs': ['frontend_agent', 'backend_agent', 'ux_ui_agent'],
+        'react': ['frontend_agent', 'ux_ui_agent'],
+        'django': ['backend_agent', 'db_agent', 'frontend_agent'],
+        'flask': ['backend_agent', 'db_agent'],
+        'python': ['backend_agent'],
+        'auto': ['frontend_agent', 'backend_agent']
+    }
+    
+    return base_agents + type_specific.get(project_type, type_specific['auto'])
+
+
 @click.group()
 @click.version_option(version="0.1.0", prog_name="Multi-Agent Framework")
 def cli():
-    """Multi-Agent Framework - Autonomous software development with AI agents."""
+    """Multi-Agent Framework - Autonomous software development with AI agents.
+    
+    Quick start:
+      maf init          Initialize framework in current directory
+      maf launch        Start agents (uses polling mode by default)
+      maf trigger       Request a new feature to be built
+      maf status        Check agent health and progress
+      
+    Learn more:
+      maf modes         Understand polling vs event-driven modes
+      maf --help        Show all available commands
+    """
     pass
 
 
@@ -77,25 +104,40 @@ OPENAI_API_KEY=your_openai_api_key_here
         click.echo(f"Created .env.example - copy to .env and add your API keys")
     
     click.echo(f"\n✅ Framework initialized successfully!")
-    click.echo(f"Next steps:")
+    click.echo(f"")
+    click.echo(f"📋 Configuration:")
+    click.echo(f"   Project: {config.config['project_name']}")
+    click.echo(f"   Type: {config.config['project_type']}")
+    click.echo(f"   Default mode: {config.get_default_mode()} (recommended)")
+    click.echo(f"")
+    click.echo(f"🚀 Next steps:")
     click.echo(f"  1. Copy .env.example to .env and add your API keys")
     click.echo(f"  2. Run 'maf launch' to start the agents")
     click.echo(f"  3. Run 'maf trigger <feature>' to start development")
+    click.echo(f"")
+    click.echo(f"💡 Tips:")
+    click.echo(f"  - Use 'maf launch --mode event' for experimental event-driven mode")
+    click.echo(f"  - Use 'maf config' to view/modify configuration")
+    click.echo(f"  - Run 'maf status' to check agent health")
 
 
 @cli.command()
 @click.option('--project', '-p', help='Project path (default: current directory)')
 @click.option('--agents', '-a', multiple=True, help='Specific agents to launch')
-@click.option('--mode', '-m', type=click.Choice(['polling', 'event']), default='event', help='Agent mode')
-def launch(project: Optional[str], agents: tuple, mode: str):
+@click.option('--mode', '-m', type=click.Choice(['polling', 'event']), help='Agent mode (default from config, polling=stable, event=experimental)')
+def launch(project: Optional[str], agents: tuple, mode: Optional[str]):
     """Launch the multi-agent framework."""
     project_path = project or os.getcwd()
     project_config = ProjectConfig(project_path)
     
+    # Use mode from config if not specified
+    if mode is None:
+        mode = project_config.get_default_mode()
+    
     click.echo(f"🚀 Launching Multi-Agent Framework")
     click.echo(f"   Project: {project_config.config['project_name']}")
     click.echo(f"   Path: {project_path}")
-    click.echo(f"   Mode: {mode}")
+    click.echo(f"   Mode: {mode} {'(recommended for stability)' if mode == 'polling' else '(experimental - may have issues)'}")
     
     # Check for .env file
     env_path = os.path.join(project_path, '.env')
@@ -114,6 +156,24 @@ def launch(project: Optional[str], agents: tuple, mode: str):
         agent_list = list(agents)
     else:
         agent_list = project_config.get_enabled_agents()
+    
+    # Check for critical agents
+    critical_agents = ['orchestrator']
+    missing_critical = [agent for agent in critical_agents if agent not in agent_list]
+    
+    if missing_critical:
+        click.echo(f"\n⚠️  Warning: Critical agents missing: {', '.join(missing_critical)}")
+        click.echo("   The orchestrator agent is required to coordinate other agents.")
+        if click.confirm("Add orchestrator to the agent list?"):
+            agent_list.insert(0, 'orchestrator')
+    
+    # Recommend agents based on project type
+    project_type = project_config.config.get('project_type', 'auto')
+    recommended_agents = _get_recommended_agents(project_type)
+    missing_recommended = [agent for agent in recommended_agents if agent not in agent_list]
+    
+    if missing_recommended:
+        click.echo(f"\n💡 Tip: For {project_type} projects, consider adding: {', '.join(missing_recommended)}")
     
     click.echo(f"\nStarting agents: {', '.join(agent_list)}")
     
@@ -274,10 +334,27 @@ def status(project: Optional[str], detailed: bool):
     else:
         click.echo(f"\n📋 No features in progress (use 'maf trigger' to start)")
     
-    # Check for running agents (basic check)
-    click.echo(f"\n🤖 Agent Configuration:")
-    click.echo(f"   Enabled agents: {len(project_config.get_enabled_agents())}")
+    # Check agent health
+    click.echo(f"\n🤖 Agent Health Check:")
+    enabled_agents = project_config.get_enabled_agents()
+    click.echo(f"   Enabled agents: {len(enabled_agents)}")
+    
+    # Check if critical agents are enabled
+    if 'orchestrator' not in enabled_agents:
+        click.echo(f"   ⚠️  Warning: Orchestrator agent not enabled (required for coordination)")
+    
+    # Check project-specific recommendations
+    project_type = project_config.config.get('project_type', 'auto')
+    recommended = _get_recommended_agents(project_type)
+    missing = [agent for agent in recommended if agent not in enabled_agents]
+    
+    if missing:
+        click.echo(f"   💡 Tip: For {project_type} projects, consider enabling: {', '.join(missing)}")
+    
+    click.echo(f"\n⚙️  Configuration:")
+    click.echo(f"   Default mode: {project_config.get_default_mode()}")
     click.echo(f"   Default model: {project_config.get_model_config()['provider']}")
+    click.echo(f"   Event bus: {project_config.get_event_bus_type()}")
 
 
 @cli.command()
@@ -310,6 +387,38 @@ def reset(project: Optional[str]):
         click.echo("✓ Cleared logs")
     
     click.echo("\n✅ Framework state reset successfully")
+
+
+@cli.command()
+@click.argument('action', required=False)
+def modes(action: Optional[str]):
+    """Explain the different agent communication modes."""
+    click.echo("📡 Multi-Agent Framework Communication Modes\n")
+    
+    click.echo("🔄 Polling Mode (Default - Recommended):")
+    click.echo("   - Agents check for messages at regular intervals")
+    click.echo("   - More stable and predictable behavior")
+    click.echo("   - Lower resource usage")
+    click.echo("   - Slight delay between message send and processing")
+    click.echo("   - Best for: Most projects, especially when starting out")
+    click.echo("")
+    
+    click.echo("⚡ Event-Driven Mode (Experimental):")
+    click.echo("   - Agents react immediately to new messages")
+    click.echo("   - Real-time communication between agents")
+    click.echo("   - Higher resource usage")
+    click.echo("   - May have stability issues with message processing")
+    click.echo("   - Best for: Projects requiring real-time coordination")
+    click.echo("")
+    
+    click.echo("🚀 Usage:")
+    click.echo("   maf launch                    # Uses default (polling)")
+    click.echo("   maf launch --mode polling     # Explicitly use polling")
+    click.echo("   maf launch --mode event       # Use event-driven mode")
+    click.echo("")
+    
+    click.echo("💡 To change the default mode:")
+    click.echo("   Edit .maf-config.json and set framework_config.default_mode")
 
 
 @cli.command()

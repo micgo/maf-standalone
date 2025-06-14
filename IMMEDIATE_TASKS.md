@@ -107,10 +107,15 @@ All 5 missing agents have been implemented:
 - Agents report progress at 10%, during processing, and 90%
 - Created unit tests for progress tracking (8 tests passing)
 
-### 11. Better Default Configuration
-- Set polling mode as default until event-driven is fixed
-- Auto-detect missing agents
-- Provide clear mode recommendations
+### 11. ✅ Better Default Configuration
+**Status**: COMPLETED
+**Solution**: Implemented comprehensive default configuration:
+- Changed default mode from 'event' to 'polling' for stability
+- Added auto-detection of missing critical agents (orchestrator)
+- Project-type based agent recommendations
+- New 'maf modes' command explains communication modes
+- Enhanced 'maf status' with health checks
+- Clear mode recommendations throughout CLI
 
 ### 12. Create Example Projects
 - Simple Next.js blog

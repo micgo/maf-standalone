@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Project state file moved from `project_state.json` to `.maf/state.json`
   - Updated all internal paths to use the new centralized location
   - This change provides cleaner project organization and better separation of runtime state
+- Changed default mode from `event` to `polling` for better stability
+  - Polling mode is now the recommended default for most projects
+  - Event-driven mode marked as experimental with clear warnings
+  - Added mode recommendations in CLI help and status output
 
 ### Added
 - Implemented 4 new event-driven agents following TDD practices:
@@ -21,6 +25,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `EventDrivenDocsAgent`: Generates API documentation, READMEs, and technical documentation
   - `EventDrivenUXUIAgent`: Creates design systems, UI components, and handles styling
 - Comprehensive test suite for all event-driven agents in `tests/test_event_driven_agents.py`
+- Better default configuration system:
+  - Auto-detection of missing critical agents (orchestrator)
+  - Project-type based agent recommendations
+  - Configuration methods for default mode and event bus type
+- New `maf modes` command to explain polling vs event-driven modes
+- Enhanced `maf status` with agent health checks and recommendations
+- Improved `maf init` with configuration tips and mode information
 
 ### Fixed
 - Fixed critical event-driven mode issue where agents weren't processing inbox messages on startup

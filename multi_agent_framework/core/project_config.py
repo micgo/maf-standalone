@@ -21,7 +21,9 @@ class ProjectConfig:
         "framework_config": {
             "state_file": ".maf/state.json",
             "message_queue_dir": ".maf/message_queues",
-            "log_dir": ".maf/logs"
+            "log_dir": ".maf/logs",
+            "default_mode": "polling",  # polling is more stable
+            "event_bus_type": "in_memory"  # in_memory or kafka
         },
         "agent_config": {
             "default_model_provider": "gemini",
@@ -165,6 +167,14 @@ class ProjectConfig:
             "provider": self.config["agent_config"]["default_model_provider"],
             "name": self.config["agent_config"]["default_model_name"]
         }
+    
+    def get_default_mode(self) -> str:
+        """Get the default agent mode (polling or event)."""
+        return self.config["framework_config"].get("default_mode", "polling")
+    
+    def get_event_bus_type(self) -> str:
+        """Get the event bus type configuration."""
+        return self.config["framework_config"].get("event_bus_type", "in_memory")
     
     def update_config(self, updates: Dict[str, Any]):
         """Update configuration with new values."""
