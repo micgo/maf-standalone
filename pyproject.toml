@@ -32,12 +32,13 @@ dependencies = [
     "google-generativeai>=0.3.0",
     "python-dotenv>=1.0.0",
     "pathlib2>=2.3.0",
+    "click>=8.0.0",
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/yourusername/multi-agent-framework"
-"Bug Tracker" = "https://github.com/yourusername/multi-agent-framework/issues"
-"Documentation" = "https://github.com/yourusername/multi-agent-framework/wiki"
+"Homepage" = "https://github.com/micgo/maf-standalone"
+"Bug Tracker" = "https://github.com/micgo/maf-standalone/issues"
+"Documentation" = "https://github.com/micgo/maf-standalone/wiki"
 
 [project.scripts]
 maf = "multi_agent_framework.cli:main"

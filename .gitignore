@@ -66,3 +66,7 @@ wiki/
 # Local development
 local/
 tmp/
+
+# Claude
+CLAUDE.md
+.claude/
