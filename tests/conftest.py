@@ -108,3 +108,168 @@ def test_message_queue_dir(temp_project_dir):
     queue_dir = os.path.join(temp_project_dir, 'message_queue')
     os.makedirs(queue_dir, exist_ok=True)
     return queue_dir
+
+
+# LLM Mocking Fixtures
+@pytest.fixture
+def mock_gemini_response():
+    """Mock a typical Gemini API response"""
+    class MockResponse:
+        def __init__(self, text):
+            self.text = text
+    return MockResponse
+
+
+@pytest.fixture
+def mock_gemini_model(mock_gemini_response):
+    """Mock Gemini model for testing"""
+    from unittest.mock import Mock
+    
+    model = Mock()
+    
+    # Default response for general prompts
+    default_response = mock_gemini_response('{"result": "Test response", "status": "success"}')
+    
+    # Specific responses for different agent types
+    orchestrator_response = mock_gemini_response('''[
+        {
+            "agent": "frontend_agent",
+            "description": "Create the UI components"
+        },
+        {
+            "agent": "backend_agent",
+            "description": "Implement the API endpoints"
+        }
+    ]''')
+    
+    frontend_response = mock_gemini_response('''
+```typescript
+import React from 'react';
+
+export const TestComponent: React.FC = () => {
+    return <div>Test Component</div>;
+};
+```
+''')
+    
+    backend_response = mock_gemini_response('''
+```python
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route('/api/test')
+def test_endpoint():
+    return jsonify({"message": "Test endpoint"})
+```
+''')
+    
+    # Configure model to return different responses based on prompt
+    def generate_content_side_effect(prompt):
+        if "break down" in prompt.lower() or "tasks" in prompt.lower():
+            return orchestrator_response
+        elif "component" in prompt.lower() or "ui" in prompt.lower():
+            return frontend_response
+        elif "api" in prompt.lower() or "endpoint" in prompt.lower():
+            return backend_response
+        else:
+            return default_response
+    
+    model.generate_content.side_effect = generate_content_side_effect
+    
+    return model
+
+
+@pytest.fixture
+def mock_llm(mock_gemini_model):
+    """Mock all LLM providers for testing"""
+    from unittest.mock import patch
+    
+    patches = []
+    
+    # Mock Gemini
+    gemini_patch = patch('google.generativeai.GenerativeModel')
+    mock_gemini = gemini_patch.start()
+    mock_gemini.return_value = mock_gemini_model
+    patches.append(gemini_patch)
+    
+    # Mock OpenAI
+    openai_patch = patch('openai.ChatCompletion.create')
+    mock_openai = openai_patch.start()
+    mock_openai.return_value = {
+        'choices': [{
+            'message': {
+                'content': '{"result": "OpenAI test response"}'
+            }
+        }]
+    }
+    patches.append(openai_patch)
+    
+    # Mock Anthropic
+    anthropic_patch = patch('anthropic.Client')
+    mock_anthropic = anthropic_patch.start()
+    mock_anthropic.return_value.messages.create.return_value.content = [
+        {'text': '{"result": "Claude test response"}'}
+    ]
+    patches.append(anthropic_patch)
+    
+    yield
+    
+    # Stop all patches
+    for patch in patches:
+        patch.stop()
+
+
+@pytest.fixture
+def mock_message_bus():
+    """Mock message bus for agent testing"""
+    from unittest.mock import Mock
+    from multi_agent_framework.core.message_bus_configurable import MessageBus
+    
+    bus = Mock(spec=MessageBus)
+    bus.messages = {}
+    
+    def send_message(agent, message):
+        if agent not in bus.messages:
+            bus.messages[agent] = []
+        bus.messages[agent].append(message)
+    
+    def receive_messages(agent):
+        messages = bus.messages.get(agent, [])
+        bus.messages[agent] = []
+        return messages
+    
+    bus.send_message.side_effect = send_message
+    bus.receive_messages.side_effect = receive_messages
+    
+    return bus
+
+
+@pytest.fixture
+def mock_event_bus():
+    """Mock event bus for testing event-driven agents"""
+    from unittest.mock import Mock
+    from multi_agent_framework.core.event_bus_interface import IEventBus, EventType
+    
+    bus = Mock(spec=IEventBus)
+    bus.subscribers = {}
+    bus.events = []
+    
+    def subscribe(event_type, handler):
+        if event_type not in bus.subscribers:
+            bus.subscribers[event_type] = []
+        bus.subscribers[event_type].append(handler)
+    
+    def publish(event):
+        bus.events.append(event)
+        event_type = event.get('type')
+        if event_type in bus.subscribers:
+            for handler in bus.subscribers[event_type]:
+                handler(event)
+    
+    bus.subscribe.side_effect = subscribe
+    bus.publish.side_effect = publish
+    bus.start.return_value = None
+    bus.stop.return_value = None
+    
+    return bus
