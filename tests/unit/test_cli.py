@@ -82,10 +82,17 @@ class TestCLI(TestCase):
         self.assertNotEqual(result.exit_code, 0)
         self.assertIn('Error:', result.output)
         
-    @mock.patch('subprocess.run')
-    def test_launch_command(self, mock_run):
+    @mock.patch('multi_agent_framework.cli.create_agent')
+    @mock.patch('threading.Thread')
+    def test_launch_command(self, mock_thread, mock_create_agent):
         """Test launch command"""
-        mock_run.return_value = mock.Mock(returncode=0)
+        # Mock thread to prevent actual thread creation
+        mock_thread_instance = mock.Mock()
+        mock_thread.return_value = mock_thread_instance
+        
+        # Mock agent creation
+        mock_agent = mock.Mock()
+        mock_create_agent.return_value = mock_agent
         
         with self.runner.isolated_filesystem(temp_dir=self.temp_dir):
             # Initialize first
@@ -95,15 +102,22 @@ class TestCLI(TestCase):
             with open('.env', 'w') as f:
                 f.write('GEMINI_API_KEY=test_key\n')
             
-            # Test basic launch
-            result = self.runner.invoke(cli, ['launch'])
-            # Launch spawns background processes, so it might not exit cleanly in tests
-            self.assertIn('Launching', result.output)
+            # Test basic launch with immediate exit
+            with mock.patch('time.sleep', side_effect=KeyboardInterrupt):
+                result = self.runner.invoke(cli, ['launch'])
             
-    @mock.patch('subprocess.run')
-    def test_launch_with_mode(self, mock_run):
+            # Should have attempted to launch
+            self.assertIn('Launching', result.output)
+            # Thread should have been created but not actually started
+            mock_thread.assert_called()
+            
+    @mock.patch('multi_agent_framework.cli.create_agent')
+    @mock.patch('threading.Thread')
+    def test_launch_with_mode(self, mock_thread, mock_create_agent):
         """Test launch with mode option"""
-        mock_run.return_value = mock.Mock(returncode=0)
+        # Mock to prevent actual execution
+        mock_thread.return_value = mock.Mock()
+        mock_create_agent.return_value = mock.Mock()
         
         with self.runner.isolated_filesystem(temp_dir=self.temp_dir):
             self.runner.invoke(cli, ['init'])
@@ -113,17 +127,22 @@ class TestCLI(TestCase):
                 f.write('GEMINI_API_KEY=test_key\n')
             
             # Test polling mode
-            result = self.runner.invoke(cli, ['launch', '--mode', 'polling'])
+            with mock.patch('time.sleep', side_effect=KeyboardInterrupt):
+                result = self.runner.invoke(cli, ['launch', '--mode', 'polling'])
             self.assertIn('mode: polling', result.output.lower())
             
-            # Test event-driven mode
-            result = self.runner.invoke(cli, ['launch', '--mode', 'event-driven'])
+            # Test event mode (note: corrected from 'event-driven')
+            with mock.patch('time.sleep', side_effect=KeyboardInterrupt):
+                result = self.runner.invoke(cli, ['launch', '--mode', 'event'])
             self.assertIn('mode: event', result.output.lower())
             
-    @mock.patch('subprocess.run')
-    def test_launch_with_agents(self, mock_run):
+    @mock.patch('multi_agent_framework.cli.create_agent')
+    @mock.patch('threading.Thread')
+    def test_launch_with_agents(self, mock_thread, mock_create_agent):
         """Test launch with specific agents"""
-        mock_run.return_value = mock.Mock(returncode=0)
+        # Mock to prevent actual execution
+        mock_thread.return_value = mock.Mock()
+        mock_create_agent.return_value = mock.Mock()
         
         with self.runner.isolated_filesystem(temp_dir=self.temp_dir):
             self.runner.invoke(cli, ['init'])
@@ -132,7 +151,9 @@ class TestCLI(TestCase):
             with open('.env', 'w') as f:
                 f.write('GEMINI_API_KEY=test_key\n')
             
-            result = self.runner.invoke(cli, ['launch', '--agents', 'orchestrator', '--agents', 'frontend_agent'])
+            with mock.patch('time.sleep', side_effect=KeyboardInterrupt):
+                result = self.runner.invoke(cli, ['launch', '--agents', 'orchestrator', '--agents', 'frontend_agent'])
+            
             self.assertIn('orchestrator', result.output)
             self.assertIn('frontend_agent', result.output)
             
