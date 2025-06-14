@@ -10,13 +10,12 @@ from typing import Dict, List, Optional, Tuple
 # Diagnostic print to show where the module is being imported from
 
 
-PROJECT_STATE_FILE = "project_state.json"
+PROJECT_STATE_FILE = ".maf/state.json"
 # Construct the absolute path to the project state file for clarity
-# This assumes the project_state.json should always be in the root directory
-# (i.e., the directory above 'core' and 'agents').
-# os.path.dirname(__file__) is '/Users/micgo/Development/pack429/core'
-# os.path.join(..., '..') is '/Users/micgo/Development/pack429'
-PROJECT_ROOT_FOR_STATE = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+# The state file is now stored in the .maf directory in the project root
+# os.path.dirname(__file__) is the 'core' directory
+# We need to go up two levels to get to the project root
+PROJECT_ROOT_FOR_STATE = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 FULL_PROJECT_STATE_PATH = os.path.join(PROJECT_ROOT_FOR_STATE, PROJECT_STATE_FILE)
 
 class ProjectStateManager:

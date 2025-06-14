@@ -14,7 +14,7 @@ framework_root = os.path.dirname(os.path.abspath(__file__))
 if framework_root not in sys.path:
     sys.path.insert(0, framework_root)
 
-from core.project_state_manager import ProjectStateManager
+from multi_agent_framework.core.project_state_manager import ProjectStateManager
 
 def create_test_task():
     """Create a test task to verify naming conventions"""

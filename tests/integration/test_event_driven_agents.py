@@ -10,14 +10,13 @@ import os
 import time
 import threading
 
-# Add framework to path
-framework_root = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, framework_root)
+# Add parent directories to path to import from multi_agent_framework
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from core.agent_factory import create_agent
-from core.event_bus_factory import get_event_bus
-from core.event_bus_interface import Event, EventType
-import config
+from multi_agent_framework.core.agent_factory import create_agent
+from multi_agent_framework.core.event_bus_factory import get_event_bus
+from multi_agent_framework.core.event_bus_interface import Event, EventType
+from multi_agent_framework import config
 
 
 def test_event_driven_flow():
@@ -203,7 +202,7 @@ def test_event_filtering():
     print("\n=== Testing Event Filtering ===")
     
     # Reset event bus for clean test
-    from core.event_bus_factory import reset_event_bus
+    from multi_agent_framework.core.event_bus_factory import reset_event_bus
     reset_event_bus()
     
     event_bus = get_event_bus(config.EVENT_BUS_CONFIG)

@@ -56,6 +56,6 @@ if __name__ == "__main__":
     mb.send_message("orchestrator", message_to_orchestrator)
     
     print(f"\nSent new feature request: '{feature_desc}' to orchestrator with ID: {initial_request_id}.")
-    print("Please check the orchestrator's terminal and your project_state.json file for progress.")
+    print("Please check the orchestrator's terminal and your .maf/state.json file for progress.")
     print("Also, observe the output in the terminals of other specialized agents as they receive tasks.")
 

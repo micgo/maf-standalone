@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **BREAKING**: Reorganized runtime state files into `.maf` directory structure
+  - Message queue files moved from `message_queue/` and `multi_agent_framework/message_queue/` to `.maf/message_queues/`
+  - Project state file moved from `project_state.json` to `.maf/state.json`
+  - Updated all internal paths to use the new centralized location
+  - This change provides cleaner project organization and better separation of runtime state
+
 ### Added
 - Implemented 4 new event-driven agents following TDD practices:
   - `EventDrivenDevOpsAgent`: Handles Docker, CI/CD, Kubernetes, and deployment configurations

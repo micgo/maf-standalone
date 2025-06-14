@@ -139,7 +139,7 @@ Standard events all agents can use:
 
 Run the test script:
 ```bash
-python test_event_driven_agents.py
+python -m pytest tests/integration/test_event_driven_agents.py
 ```
 
 This demonstrates:

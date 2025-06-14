@@ -14,10 +14,11 @@ The Multi-Agent Framework (MAF) is a Python-based autonomous software developmen
 pip install -e .
 
 # Or use the install script
-./install.sh
+./scripts/install.sh
 
-# Setup virtual environment (legacy)
-./multi_agent_framework/setup_venv.sh
+# Setup virtual environment (use built-in venv)
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
 ### Running the Framework
@@ -40,15 +41,16 @@ maf reset
 
 ### Testing
 ```bash
-# Run all framework tests
-python test_framework.py
+# Run all tests
+pytest tests/
 
-# Run specific test suites
-python multi_agent_framework/test_event_driven_agents.py
-python multi_agent_framework/test_agent_communication.py
+# Run specific test categories
+pytest tests/unit/
+pytest tests/integration/
+pytest tests/e2e/
 
 # Health check
-python multi_agent_framework/recovery_tool.py health
+python -m multi_agent_framework.recovery_tool health
 ```
 
 ### Development
@@ -62,6 +64,7 @@ pip install -e ".[dev]"
 # - Flake8 linting
 # - pytest for testing
 ```
+- Do not add yourself to commit messages
 
 ## High-Level Architecture
 

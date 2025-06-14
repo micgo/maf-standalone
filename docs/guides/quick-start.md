@@ -41,7 +41,9 @@ maf init
 This creates:
 - `.maf-config.json` - Configuration file
 - `.env.example` - Template for API keys
-- `.maf_messages/` - Message queue directory
+- `.maf/` - Runtime directory containing:
+  - `state.json` - Framework state tracking
+  - `message_queues/` - Agent message queues
 - `.maf_logs/` - Log directory
 
 ### Step 3: Add your API key

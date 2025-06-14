@@ -6,8 +6,8 @@ Test script to demonstrate improved error handling in MAF
 import os
 import sys
 
-# Add parent directory to path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# Add parent directories to path to import from multi_agent_framework
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from multi_agent_framework.core.error_handler import (
     error_handler, ErrorCategory, ErrorLevel,

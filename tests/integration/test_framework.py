@@ -9,8 +9,8 @@ import tempfile
 import shutil
 from pathlib import Path
 
-# Add the framework to Python path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# Add parent directories to path to import from multi_agent_framework
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from multi_agent_framework.core.project_config import ProjectConfig
 from multi_agent_framework.core.agent_factory import create_agent, AgentFactory

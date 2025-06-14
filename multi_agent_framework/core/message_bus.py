@@ -2,7 +2,7 @@ import json
 import os
 import time # Added this import to support timestamp in messages
 
-MESSAGE_QUEUE_DIR = "message_queue"
+MESSAGE_QUEUE_DIR = ".maf/message_queues"
 INBOX_SUFFIX = "_inbox.json"
 OUTBOX_SUFFIX = "_outbox.json" # Not currently used but kept for completeness
 

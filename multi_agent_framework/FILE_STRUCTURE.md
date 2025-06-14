@@ -3,21 +3,20 @@
 ## 🏗️ Core Framework
 
 ### Essential Scripts
-- **`launch_agents.sh`** - Launch all agents in iTerm2 tabs (main launcher)
-- **`setup_venv.sh`** - Set up virtual environment and dependencies
+- **`cli.py`** - Main CLI interface (accessed via `maf` command)
 - **`recovery_tool.py`** - System health monitoring and recovery
 - **`trigger_feature.py`** - Start new feature development
-- **`test_agent_communication.py`** - Test framework functionality
-- **`check_agents.sh`** - Quick system status check
+- **`run_agents.py`** - Agent runner script
 
 ### Configuration
-- **`requirements.txt`** - Python dependencies
-- **`.env.example`** - Environment variables template
+- **`pyproject.toml`** - Package configuration and dependencies
+- **`config.py`** - Framework configuration
+- **`.maf-config.json`** - Project-specific configuration (created by `maf init`)
 - **`.env`** - Your API keys (not in git)
 
 ## 📁 Directory Structure
 
-### `/agents/`
+### `/multi_agent_framework/agents/`
 - **`orchestrator_agent.py`** - Central coordinator
 - **`base_agent.py`** - Base class for all agents
 - **`specialized/`** - Domain-specific agents:
@@ -30,7 +29,7 @@
   - `docs_agent.py` - Documentation specialist
   - `ux_ui_agent.py` - UX/UI specialist
 
-### `/core/`
+### `/multi_agent_framework/core/`
 - **`project_state_manager.py`** - Task tracking and recovery
 - **`message_bus.py`** - Inter-agent communication
 - **`intelligent_namer.py`** - Smart file naming
@@ -39,17 +38,18 @@
 - **`project_analyzer.py`** - Codebase analysis
 - **`file_integrator.py`** - File management
 
-### `/message_queue/`
-- Individual agent inbox JSON files
-- Handles asynchronous communication between agents
+### Runtime Directory
+- Runtime files are now stored in `.maf/` in the target project directory
+- Contains `state.json` and `message_queues/`
+- Created automatically by `maf init`
 
-### `/venv/`
-- Python virtual environment
-- Contains all framework dependencies
+### Installation
+- Install as package: `pip install -e .`
+- Virtual environment is recommended but not required
 
 ## 📊 State Files
-- **`project_state.json`** - Current tasks and features
-- Individual agent inbox files in `message_queue/`
+- **`.maf/state.json`** - Current tasks and features (in target project directory)
+- Individual agent inbox files in `.maf/message_queues/` (in target project directory)
 
 ## 📚 Documentation
 - **`README.md`** - Framework overview and features
@@ -58,18 +58,18 @@
 
 ## 🚀 Quick Start
 
-1. **Setup:** `./setup_venv.sh`
-2. **Launch:** `./launch_agents.sh`
-3. **Test:** `python3 test_agent_communication.py`
-4. **Develop:** `python3 trigger_feature.py`
-5. **Monitor:** `python3 recovery_tool.py health`
+1. **Install:** `pip install -e .`
+2. **Initialize:** `maf init`
+3. **Launch:** `maf launch`
+4. **Develop:** `maf trigger "Your feature description"`
+5. **Monitor:** `maf status`
 
 ## 🔧 Maintenance
 
-- **Health Check:** `python3 recovery_tool.py health`
-- **Agent Status:** `python3 recovery_tool.py agents`
-- **System Recovery:** `python3 recovery_tool.py full`
-- **Quick Status:** `./check_agents.sh`
+- **Status Check:** `maf status`
+- **Detailed Status:** `maf status --detailed`
+- **Reset Framework:** `maf reset`
+- **View Logs:** `maf logs`
 
 ## 📈 Features
 
@@ -79,7 +79,7 @@
 - ✅ Automatic recovery and health monitoring
 - ✅ Real-time system status
 - ✅ Cross-agent validation
-- ✅ iTerm2 integration for easy monitoring
+- ✅ CLI interface for easy management
 
 ---
 

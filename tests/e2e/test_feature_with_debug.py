@@ -12,10 +12,10 @@ import threading
 framework_root = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, framework_root)
 
-from core.agent_factory import create_agent
-from core.event_bus_factory import get_event_bus
-from core.event_bus_interface import Event, EventType
-import config
+from multi_agent_framework.core.agent_factory import create_agent
+from multi_agent_framework.core.event_bus_factory import get_event_bus
+from multi_agent_framework.core.event_bus_interface import Event, EventType
+from multi_agent_framework import config
 
 
 def test_feature_debug():

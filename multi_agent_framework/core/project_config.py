@@ -19,9 +19,9 @@ class ProjectConfig:
         "project_name": "My Project",
         "project_root": "",
         "framework_config": {
-            "state_file": ".maf_state.json",
-            "message_queue_dir": ".maf_messages",
-            "log_dir": ".maf_logs"
+            "state_file": ".maf/state.json",
+            "message_queue_dir": ".maf/message_queues",
+            "log_dir": ".maf/logs"
         },
         "agent_config": {
             "default_model_provider": "gemini",

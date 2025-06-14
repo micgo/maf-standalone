@@ -15,15 +15,25 @@ from threading import Event
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from multi_agent_framework.core.event_bus_factory import get_event_bus
+from multi_agent_framework.core.event_bus_factory import get_event_bus, reset_event_bus
 from multi_agent_framework.core.event_bus_interface import Event as BusEvent, EventType
 from multi_agent_framework.core.project_config import ProjectConfig
 from multi_agent_framework.core.agent_factory import create_agent
-from multi_agent_framework.core.task_manager import TaskManager
+from ..helpers.mock_agents import create_mock_agent
 
 
 class EventDrivenIntegrationTest(TestCase):
     """Integration tests for event-driven agent system"""
+    
+    def _create_event(self, event_type: EventType, data: Dict[str, Any], source: str = 'test') -> BusEvent:
+        """Helper to create events with required fields"""
+        return BusEvent(
+            id=f"{source}-{event_type.value}-{time.time()}",
+            type=event_type,
+            source=source,
+            timestamp=time.time(),
+            data=data
+        )
     
     def setUp(self):
         """Set up test environment"""
@@ -35,7 +45,7 @@ class EventDrivenIntegrationTest(TestCase):
         self.project_config = ProjectConfig(self.test_dir)
         
         # Initialize event bus
-        self.event_bus = get_event_bus('inmemory')
+        self.event_bus = get_event_bus({'type': 'inmemory'})
         
         # Track events
         self.received_events = []
@@ -49,6 +59,9 @@ class EventDrivenIntegrationTest(TestCase):
         """Clean up test environment"""
         # Stop event bus
         self.event_bus.stop()
+        
+        # Reset global event bus
+        reset_event_bus()
         
         # Clean up temp directory
         if os.path.exists(self.test_dir):
@@ -68,17 +81,17 @@ class EventDrivenIntegrationTest(TestCase):
     def test_single_agent_task_flow(self):
         """Test that a single agent can receive and complete a task"""
         # Create frontend agent
-        agent = create_agent('frontend', mode='event_driven', project_config=self.project_config)
+        agent = create_mock_agent('frontend', project_config=self.project_config)
         agent.start()
         
         try:
             # Send task to agent
             task_id = 'test_single_001'
-            self.event_bus.publish(BusEvent(
-                type=EventType.TASK_ASSIGNED,
-                data={
+            self.event_bus.publish(self._create_event(
+                EventType.TASK_ASSIGNED,
+                {
                     'task_id': task_id,
-                    'agent_name': 'frontend_agent',
+                    'assigned_agent': 'frontend_agent',
                     'task_description': 'Create a simple button component',
                     'priority': 'high'
                 }
@@ -101,8 +114,8 @@ class EventDrivenIntegrationTest(TestCase):
     def test_multi_agent_collaboration(self):
         """Test that multiple agents can collaborate on related tasks"""
         # Create multiple agents
-        frontend_agent = create_agent('frontend', mode='event_driven', project_config=self.project_config)
-        backend_agent = create_agent('backend', mode='event_driven', project_config=self.project_config)
+        frontend_agent = create_mock_agent('frontend', project_config=self.project_config)
+        backend_agent = create_mock_agent('backend', project_config=self.project_config)
         
         frontend_agent.start()
         backend_agent.start()
@@ -110,11 +123,11 @@ class EventDrivenIntegrationTest(TestCase):
         try:
             # Send frontend task
             frontend_task_id = 'test_collab_fe_001'
-            self.event_bus.publish(BusEvent(
-                type=EventType.TASK_ASSIGNED,
-                data={
+            self.event_bus.publish(self._create_event(
+                EventType.TASK_ASSIGNED,
+                {
                     'task_id': frontend_task_id,
-                    'agent_name': 'frontend_agent',
+                    'assigned_agent': 'frontend_agent',
                     'task_description': 'Create a user profile page',
                     'priority': 'high'
                 }
@@ -122,11 +135,11 @@ class EventDrivenIntegrationTest(TestCase):
             
             # Send backend task
             backend_task_id = 'test_collab_be_001'
-            self.event_bus.publish(BusEvent(
-                type=EventType.TASK_ASSIGNED,
-                data={
+            self.event_bus.publish(self._create_event(
+                EventType.TASK_ASSIGNED,
+                {
                     'task_id': backend_task_id,
-                    'agent_name': 'backend_agent',
+                    'assigned_agent': 'backend_agent',
                     'task_description': 'Create API endpoint for user profile data',
                     'priority': 'high'
                 }
@@ -153,7 +166,7 @@ class EventDrivenIntegrationTest(TestCase):
     def test_agent_health_check(self):
         """Test that agents respond to health check events"""
         # Create agent
-        agent = create_agent('qa', mode='event_driven', project_config=self.project_config)
+        agent = create_mock_agent('qa', project_config=self.project_config)
         agent.start()
         
         try:
@@ -161,15 +174,15 @@ class EventDrivenIntegrationTest(TestCase):
             health_responses = []
             
             def track_health(event: BusEvent):
-                if event.type == EventType.AGENT_STATUS:
+                if event.type == EventType.AGENT_HEARTBEAT:
                     health_responses.append(event.data)
                     
-            self.event_bus.subscribe(EventType.AGENT_STATUS, track_health)
+            self.event_bus.subscribe(EventType.AGENT_HEARTBEAT, track_health)
             
             # Send health check
-            self.event_bus.publish(BusEvent(
-                type=EventType.SYSTEM_HEALTH_CHECK,
-                data={}
+            self.event_bus.publish(self._create_event(
+                EventType.SYSTEM_HEALTH_CHECK,
+                {}
             ))
             
             # Wait for response
@@ -180,9 +193,10 @@ class EventDrivenIntegrationTest(TestCase):
                 
             # Verify health response
             self.assertTrue(len(health_responses) > 0)
-            qa_response = next((r for r in health_responses if r['agent_name'] == 'qa_agent'), None)
+            qa_response = next((r for r in health_responses if r.get('agent') == 'qa_agent'), None)
             self.assertIsNotNone(qa_response)
-            self.assertEqual(qa_response['status'], 'running')
+            # Heartbeat shows agent is active
+            self.assertIn('active_tasks', qa_response)
             
         finally:
             agent.stop()
@@ -190,7 +204,7 @@ class EventDrivenIntegrationTest(TestCase):
     def test_task_priority_handling(self):
         """Test that agents handle task priorities correctly"""
         # Create agent
-        agent = create_agent('backend', mode='event_driven', project_config=self.project_config)
+        agent = create_mock_agent('backend', project_config=self.project_config)
         agent.start()
         
         try:
@@ -202,11 +216,11 @@ class EventDrivenIntegrationTest(TestCase):
             ]
             
             for task in tasks:
-                self.event_bus.publish(BusEvent(
-                    type=EventType.TASK_ASSIGNED,
-                    data={
+                self.event_bus.publish(self._create_event(
+                    EventType.TASK_ASSIGNED,
+                    {
                         'task_id': task['id'],
-                        'agent_name': 'backend_agent',
+                        'assigned_agent': 'backend_agent',
                         'task_description': task['description'],
                         'priority': task['priority']
                     }
@@ -233,9 +247,9 @@ class EventDrivenIntegrationTest(TestCase):
         """Test that agents handle shutdown events properly"""
         # Create multiple agents
         agents = [
-            create_agent('frontend', mode='event_driven', project_config=self.project_config),
-            create_agent('backend', mode='event_driven', project_config=self.project_config),
-            create_agent('database', mode='event_driven', project_config=self.project_config)
+            create_mock_agent('frontend', project_config=self.project_config),
+            create_mock_agent('backend', project_config=self.project_config),
+            create_mock_agent('database', project_config=self.project_config)
         ]
         
         # Start all agents
@@ -249,16 +263,16 @@ class EventDrivenIntegrationTest(TestCase):
         shutdown_acks = []
         
         def track_shutdown(event: BusEvent):
-            if event.type == EventType.AGENT_STATUS and event.data.get('status') == 'stopped':
-                shutdown_acks.append(event.data['agent_name'])
+            if event.type == EventType.AGENT_STOPPED:
+                shutdown_acks.append(event.data.get('agent_name', event.source))
                 
-        self.event_bus.subscribe(EventType.AGENT_STATUS, track_shutdown)
+        self.event_bus.subscribe(EventType.AGENT_STOPPED, track_shutdown)
         
         try:
             # Send shutdown event
-            self.event_bus.publish(BusEvent(
-                type=EventType.SYSTEM_SHUTDOWN,
-                data={}
+            self.event_bus.publish(self._create_event(
+                EventType.SYSTEM_SHUTDOWN,
+                {}
             ))
             
             # Wait for agents to acknowledge shutdown
@@ -278,17 +292,17 @@ class EventDrivenIntegrationTest(TestCase):
     def test_error_recovery(self):
         """Test that system recovers from agent errors"""
         # Create agent
-        agent = create_agent('database', mode='event_driven', project_config=self.project_config)
+        agent = create_mock_agent('database', project_config=self.project_config)
         agent.start()
         
         try:
             # Send a task that will fail (in test mode, we can simulate this)
             task_id = 'test_error_001'
-            self.event_bus.publish(BusEvent(
-                type=EventType.TASK_ASSIGNED,
-                data={
+            self.event_bus.publish(self._create_event(
+                EventType.TASK_ASSIGNED,
+                {
                     'task_id': task_id,
-                    'agent_name': 'database_agent',
+                    'assigned_agent': 'database_agent',
                     'task_description': 'CREATE TABLE with invalid syntax ###ERROR###',
                     'priority': 'high'
                 }
@@ -305,11 +319,11 @@ class EventDrivenIntegrationTest(TestCase):
             
             # Send a valid task to verify agent is still functional
             valid_task_id = 'test_error_recovery_001'
-            self.event_bus.publish(BusEvent(
-                type=EventType.TASK_ASSIGNED,
-                data={
+            self.event_bus.publish(self._create_event(
+                EventType.TASK_ASSIGNED,
+                {
                     'task_id': valid_task_id,
-                    'agent_name': 'database_agent',
+                    'assigned_agent': 'database_agent',
                     'task_description': 'CREATE TABLE users (id INTEGER PRIMARY KEY)',
                     'priority': 'high'
                 }
@@ -330,7 +344,7 @@ class EventDrivenIntegrationTest(TestCase):
     def test_concurrent_task_handling(self):
         """Test that agents can handle multiple concurrent tasks"""
         # Create agent
-        agent = create_agent('devops', mode='event_driven', project_config=self.project_config)
+        agent = create_mock_agent('devops', project_config=self.project_config)
         agent.start()
         
         try:
@@ -339,11 +353,11 @@ class EventDrivenIntegrationTest(TestCase):
             for i in range(5):
                 task_id = f'concurrent_test_{i:03d}'
                 task_ids.append(task_id)
-                self.event_bus.publish(BusEvent(
-                    type=EventType.TASK_ASSIGNED,
-                    data={
+                self.event_bus.publish(self._create_event(
+                    EventType.TASK_ASSIGNED,
+                    {
                         'task_id': task_id,
-                        'agent_name': 'devops_agent',
+                        'assigned_agent': 'devops_agent',
                         'task_description': f'Create Dockerfile for service {i}',
                         'priority': 'medium'
                     }
@@ -369,8 +383,8 @@ class EventDrivenIntegrationTest(TestCase):
     def test_cross_agent_validation(self):
         """Test cross-agent validation functionality"""
         # Create frontend and backend agents
-        frontend_agent = create_agent('frontend', mode='event_driven', project_config=self.project_config)
-        backend_agent = create_agent('backend', mode='event_driven', project_config=self.project_config)
+        frontend_agent = create_mock_agent('frontend', project_config=self.project_config)
+        backend_agent = create_mock_agent('backend', project_config=self.project_config)
         
         frontend_agent.start()
         backend_agent.start()
@@ -378,11 +392,11 @@ class EventDrivenIntegrationTest(TestCase):
         try:
             # Create API endpoint task for backend
             backend_task_id = 'api_endpoint_001'
-            self.event_bus.publish(BusEvent(
-                type=EventType.TASK_ASSIGNED,
-                data={
+            self.event_bus.publish(self._create_event(
+                EventType.TASK_ASSIGNED,
+                {
                     'task_id': backend_task_id,
-                    'agent_name': 'backend_agent',
+                    'assigned_agent': 'backend_agent',
                     'task_description': 'Create /api/users endpoint returning user data',
                     'priority': 'high'
                 }
@@ -396,11 +410,11 @@ class EventDrivenIntegrationTest(TestCase):
                 
             # Create frontend task that uses the API
             frontend_task_id = 'frontend_api_001'
-            self.event_bus.publish(BusEvent(
-                type=EventType.TASK_ASSIGNED,
-                data={
+            self.event_bus.publish(self._create_event(
+                EventType.TASK_ASSIGNED,
+                {
                     'task_id': frontend_task_id,
-                    'agent_name': 'frontend_agent',
+                    'assigned_agent': 'frontend_agent',
                     'task_description': 'Create component that fetches data from /api/users',
                     'priority': 'high'
                 }

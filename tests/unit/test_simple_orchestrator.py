@@ -11,7 +11,7 @@ import time
 framework_root = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, framework_root)
 
-from agents.event_driven_orchestrator_agent import EventDrivenOrchestratorAgent
+from multi_agent_framework.agents.event_driven_orchestrator_agent import EventDrivenOrchestratorAgent
 
 # Test if orchestrator can generate responses
 def test_orchestrator():

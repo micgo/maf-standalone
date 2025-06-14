@@ -104,7 +104,7 @@ pip install -e .
 
 ## 🚀 Quick Start
 
-> 📚 **[View the detailed Quick Start Guide](docs/QUICK_START.md)** for step-by-step instructions with examples!
+> 📚 **[View the detailed Quick Start Guide](docs/guides/quick-start.md)** for step-by-step instructions with examples!
 
 ### 1️⃣ Initialize a Project
 
@@ -118,7 +118,9 @@ maf init
 This creates:
 - `.maf-config.json` - Project configuration
 - `.env.example` - Template for API keys
-- Framework directories for state and message queues
+- `.maf/` - Runtime directory containing:
+  - `state.json` - Framework state tracking
+  - `message_queues/` - Agent message queues
 
 ### 2️⃣ Configure API Keys
 
@@ -383,8 +385,13 @@ python -m pytest tests/
 # Run with coverage
 python -m pytest --cov=multi_agent_framework tests/
 
-# Run specific test
-python -m pytest tests/test_event_driven_agents.py
+# Run specific test category
+python -m pytest tests/unit/
+python -m pytest tests/integration/
+python -m pytest tests/e2e/
+
+# Run specific test file
+python -m pytest tests/integration/test_event_driven_agents.py
 ```
 
 ### 🤝 Contributing

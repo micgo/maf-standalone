@@ -8,11 +8,11 @@ import sys
 import time
 from datetime import datetime
 
-# Add current directory to path
-sys.path.insert(0, os.path.dirname(__file__))
+# Add parent directories to path to import from multi_agent_framework
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from core.message_bus import MessageBus
-from core.project_state_manager import ProjectStateManager
+from multi_agent_framework.core.message_bus import MessageBus
+from multi_agent_framework.core.project_state_manager import ProjectStateManager
 
 def test_message_bus():
     """Test the message bus functionality."""
@@ -69,13 +69,13 @@ def test_agent_import():
     print("🤖 Testing Agent Imports...")
     
     try:
-        from agents.orchestrator_agent import OrchestratorAgent
+        from multi_agent_framework.agents.orchestrator_agent import OrchestratorAgent
         print("✅ Orchestrator agent imported")
         
-        from agents.specialized.frontend_agent import FrontendAgent
+        from multi_agent_framework.agents.specialized.frontend_agent import FrontendAgent
         print("✅ Frontend agent imported")
         
-        from agents.specialized.backend_agent import BackendAgent  
+        from multi_agent_framework.agents.specialized.backend_agent import BackendAgent  
         print("✅ Backend agent imported")
         
         return True

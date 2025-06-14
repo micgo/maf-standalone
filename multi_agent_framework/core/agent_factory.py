@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from .. import config
 from ..agents.base_agent_configurable import BaseAgent
-from .project_config import ProjectConfig
+from multi_agent_framework.core.project_config import ProjectConfig
 
 
 class AgentFactory:

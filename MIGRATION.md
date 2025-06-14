@@ -56,8 +56,9 @@ maf init
 
 This creates:
 - `.maf-config.json` - Project configuration
-- `message_queue/` - Agent communication directory
-- `project_state.json` - Task tracking
+- `.maf/` - Runtime directory containing:
+  - `state.json` - Task tracking
+  - `message_queues/` - Agent communication
 
 ### 3. Update Your Configuration
 
@@ -141,7 +142,7 @@ If you get import errors, ensure:
 - Ensure all paths in the config are accessible
 
 ### Agent Communication
-- Verify message queue directory exists and is writable
+- Verify `.maf/message_queues/` directory exists and is writable
 - Check that all agents are using the same project root
 - Run `maf status` to diagnose communication issues
 

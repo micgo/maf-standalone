@@ -26,7 +26,7 @@ class MessageBus:
         Args:
             message_dir: Directory for message queue files. If None, uses current directory.
         """
-        self.message_dir = message_dir or os.path.join(os.getcwd(), ".maf_messages")
+        self.message_dir = message_dir or os.path.join(os.getcwd(), ".maf/message_queues")
         
         # Ensure the message directory exists
         os.makedirs(self.message_dir, exist_ok=True)
