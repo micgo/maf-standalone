@@ -2,7 +2,8 @@
 
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Code Coverage](https://img.shields.io/badge/coverage-18%25-red.svg)](./COVERAGE_REPORT.md)
+[![Coverage Status](https://coveralls.io/repos/github/micgo/maf-standalone/badge.svg?branch=main)](https://coveralls.io/github/micgo/maf-standalone?branch=main)
+[![Tests](https://github.com/micgo/maf-standalone/workflows/Coveralls/badge.svg)](https://github.com/micgo/maf-standalone/actions)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 [![GitHub Issues](https://img.shields.io/github/issues/micgo/maf-standalone)](https://github.com/micgo/maf-standalone/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/micgo/maf-standalone)](https://github.com/micgo/maf-standalone/stargazers)
