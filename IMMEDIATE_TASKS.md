@@ -70,10 +70,11 @@ All 5 missing agents have been implemented:
 - Included troubleshooting section and pro tips
 - Added complete blog tutorial example
 
-### 7. Add Troubleshooting Section to Wiki
-- System clock issues
-- API key problems
-- Mode selection guide
+### 7. ✅ Add Troubleshooting Section to Wiki
+**Status**: COMPLETED
+- Comprehensive troubleshooting guide exists at wiki/Troubleshooting.md
+- Covers all mentioned issues and more
+- Updated with new .maf/ directory structure
 
 ## 🧪 Testing Priorities
 
@@ -86,10 +87,13 @@ All 5 missing agents have been implemented:
 - Added Kafka event bus tests
 - Added agent communication pattern tests
 
-### 9. CLI Command Tests
-- Test all command variations
-- Test error cases
-- Test help messages
+### 9. ✅ CLI Command Tests
+**Status**: COMPLETED
+- Created comprehensive CLI test suite (test_cli.py, test_cli_basic.py, test_cli_scenarios.py)
+- Tests all command variations (init, launch, trigger, status, reset, config)
+- Tests error cases and edge conditions
+- Tests help messages for all commands
+- 13 core tests passing successfully
 
 ## 💡 Quick Wins
 
