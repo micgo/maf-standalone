@@ -72,7 +72,8 @@ class DocsAgent(BaseAgent):
             self.send_message("orchestrator", task_id, "Attempting retry after reviewing error.", "status_update")
             
             original_task_description = self.state_manager.get_task(task_id)['description']
-            enhanced_description = f"{original_task_description}\n\nPrevious attempt failed with error: {error_content}\nPlease fix the issues and try again."
+            error_details = f"\n\nPrevious attempt failed with error: {error_content}\nPlease fix the issues and try again."
+            enhanced_description = f"{original_task_description}{error_details}"
             
             # Generate improved documentation
             generated_doc = self._generate_documentation(enhanced_description)
@@ -126,7 +127,8 @@ class DocsAgent(BaseAgent):
                 with open(file_path, 'r') as f:
                     content = f.read()
                     relative_path = os.path.relpath(file_path, self.project_root)
-                    context.append(f"--- Existing Document: {relative_path} ---\n```markdown\n{content}\n```\n")
+                    file_context = f"--- Existing Document: {relative_path} ---\n```markdown\n{content}\n```\n"
+                    context.append(file_context)
             except Exception as e:
                 print(f"ERROR: DocsAgent - Could not read existing docs from {file_path} for context: {e}")
         return "\n".join(context), most_recent_file_path
@@ -138,6 +140,9 @@ class DocsAgent(BaseAgent):
         """
         existing_docs_context, most_recent_doc_file = self._get_existing_docs_context()
 
+        # Extract f-string expressions to avoid backslash errors
+        docs_context_guidance = f"Consider the following existing documentation context from your project. Adapt your new documentation to fit with this existing style and content:\n{existing_docs_context}\n"
+
         prompt = f"""You are a Documentation Agent.
         Your task is to generate concise Markdown documentation for a Next.js application,
         covering aspects related to React components, Next.js API Routes, Supabase database integration, or Stripe API integration.
@@ -146,7 +151,7 @@ class DocsAgent(BaseAgent):
         Structure it with clear headings, code snippets (with language highlighting), and bullet points where appropriate.
         Focus on clarity and completeness for the specific documentation piece.
         
-        {f"Consider the following existing documentation context from your project. Adapt your new documentation to fit with this existing style and content:\n{existing_docs_context}\n" if existing_docs_context else ""}
+        {docs_context_guidance if existing_docs_context else ""}
 
         Do NOT include any text or formatting outside of the Markdown content.
         """

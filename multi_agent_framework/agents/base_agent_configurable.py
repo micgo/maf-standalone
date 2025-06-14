@@ -11,7 +11,7 @@ from typing import Optional
 from dotenv import load_dotenv
 import openai
 import anthropic
-import google.genai as genai
+import google.generativeai as genai
 
 from ..core.message_bus_configurable import MessageBus
 from ..core.shared_state_manager import get_shared_state_manager

@@ -131,7 +131,8 @@ class DevopsAgent(BaseAgent):
                     content = f.read()
                     relative_path = os.path.relpath(file_path, self.project_root)
                     lang_highlight = "json" if file_path.endswith('.json') else ("yaml" if file_path.endswith(('.yaml', '.yml')) else "typescript") # tsconfig etc.
-                    context.append(f"--- Existing File: {relative_path} ---\n```{lang_highlight}\n{content}\n```\n")
+                    file_context = f"--- Existing File: {relative_path} ---\n```{lang_highlight}\n{content}\n```\n"
+                    context.append(file_context)
             except Exception as e:
                 print(f"ERROR: DevopsAgent - Could not read existing DevOps config from {file_path} for context: {e}")
         return "\n".join(context), most_recent_file_path
@@ -142,6 +143,10 @@ class DevopsAgent(BaseAgent):
         Returns (generated_config, target_file_suggestion)
         """
         existing_config_context, most_recent_config_file = self._get_existing_devops_config_context()
+
+        # Extract f-string expressions to avoid backslash errors
+        config_context_text = f"Existing Configuration Context (most recent file first):\n{existing_config_context}\n"
+        config_context_guidance = f"Consider the following existing configuration context from your project. Adapt your new configuration to fit with this existing structure and style:\n{existing_config_context}\n"
 
         # Check if this is a modification task
         is_modification = any(keyword in task_description.lower() for keyword in ["modify", "update", "add to existing", "configure existing", "alter"])
@@ -155,7 +160,7 @@ class DevopsAgent(BaseAgent):
             Consider the most recent existing configuration file provided in the context below. Your output should be the full,
             revised content of that file, integrating the new functionality or changes.
             
-            {f"Existing Configuration Context (most recent file first):\n{existing_config_context}\n" if existing_config_context else ""}
+            {config_context_text if existing_config_context else ""}
 
             Generate the full, complete code/configuration. Do NOT omit any parts or use placeholders like '...'.
             Do NOT include any explanatory text, comments outside the code, or formatting outside of the content.
@@ -170,7 +175,7 @@ class DevopsAgent(BaseAgent):
             Focus on Vercel-specific configurations for environment variables (especially for Supabase URL/keys),
             serverless functions, or build commands. If CI/CD is implied, provide a relevant YAML snippet for GitHub Actions or similar.
             
-            {f"Consider the following existing configuration context from your project. Adapt your new configuration to fit with this existing structure and style:\n{existing_config_context}\n" if existing_config_context else ""}
+            {config_context_guidance if existing_config_context else ""}
 
             Generate the full, complete code/configuration. Do NOT omit any parts or use placeholders like '...'.
             Do NOT include any explanatory text, comments outside the code, or formatting outside of the content.

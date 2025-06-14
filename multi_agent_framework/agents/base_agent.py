@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from dotenv import load_dotenv
 import openai
 import anthropic
-import google.genai as genai
+import google.generativeai as genai
 import sys
 # Add parent directory to path to find core modules
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

@@ -210,7 +210,6 @@ _project_config: Optional[ProjectConfig] = None
 
 def get_project_config() -> ProjectConfig:
     """Get the global project configuration instance"""
-    global _project_config
     if _project_config is None:
         raise RuntimeError("Project configuration not initialized. Call init_project_config() first.")
     return _project_config

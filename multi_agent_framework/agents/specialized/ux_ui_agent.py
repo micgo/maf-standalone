@@ -183,7 +183,8 @@ class UxUiAgent(BaseAgent):
                     elif file_path.endswith('.json'): lang_highlight = "json"
                     elif file_path.endswith('.md'): lang_highlight = "markdown"
 
-                    context.append(f"--- Existing File: {relative_path} ---\n```{lang_highlight}\n{content}\n```\n")
+                    file_context = f"--- Existing File: {relative_path} ---\n```{lang_highlight}\n{content}\n```\n"
+                    context.append(file_context)
             except Exception as e:
                 print(f"ERROR: UxUiAgent - Could not read existing UI/UX code from {file_path} for context: {e}")
         return "\n".join(context), most_recent_file_path
@@ -196,6 +197,10 @@ class UxUiAgent(BaseAgent):
         """
         existing_ui_context, most_recent_ui_file = self._get_existing_ui_context()
         
+        # Extract f-string expressions to avoid backslash errors
+        ui_context_text = f"Existing UI/UX Context (most recent file first):\n{existing_ui_context}\n"
+        ui_context_guidance = f"Consider the following existing UI/UX context from your project. Adapt your new design/code to fit with this existing style, component library (e.g., Shadcn UI from components/ui), and overall visual language:\n{existing_ui_context}\n"
+        
         if is_modification and most_recent_ui_file:
             prompt = f"""You are a UX/UI Design Agent specializing in Next.js (App Router), React, and Tailwind CSS.
             Your task is to **modify an existing UI component, page, or design artifact** to address the following requirement:
@@ -204,7 +209,7 @@ class UxUiAgent(BaseAgent):
             Consider the most recent existing file provided in the context below. Your output should be the full,
             revised content of that file, integrating the new design, component changes, or flow improvements.
             
-            {f"Existing UI/UX Context (most recent file first):\n{existing_ui_context}\n" if existing_ui_context else ""}
+            {ui_context_text if existing_ui_context else ""}
 
             Generate the full, complete code for the component file (e.g., a .tsx file) or a detailed Markdown description of the UI/UX changes.
             If generating code, use functional React components and Tailwind CSS classes.
@@ -220,7 +225,7 @@ class UxUiAgent(BaseAgent):
             If generating a component: ensure it's a functional React component, use Tailwind CSS for styling, and import necessary modules.
             If describing a flow/concept: provide a detailed Markdown explanation, including user steps, states, and rationale.
 
-            {f"Consider the following existing UI/UX context from your project. Adapt your new design/code to fit with this existing style, component library (e.g., Shadcn UI from components/ui), and overall visual language:\n{existing_ui_context}\n" if existing_ui_context else ""}
+            {ui_context_guidance if existing_ui_context else ""}
 
             Generate the full, complete content. Do NOT omit any parts or use placeholders like '...'.
             Do NOT include any explanatory text, comments outside the content, or formatting outside of the main content.

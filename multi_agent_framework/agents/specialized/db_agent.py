@@ -147,7 +147,8 @@ class DbAgent(BaseAgent):
                 with open(file_path, 'r') as f:
                     content = f.read()
                     relative_path = os.path.relpath(file_path, self.project_root)
-                    context.append(f"--- Existing File: {relative_path} ---\n```sql\n{content}\n```\n")
+                    file_context = f"--- Existing File: {relative_path} ---\n```sql\n{content}\n```\n"
+                    context.append(file_context)
         except Exception as e:
             print(f"ERROR: DbAgent - Could not read existing DB schema for context: {e}")
         
@@ -161,6 +162,10 @@ class DbAgent(BaseAgent):
         Returns (generated_sql, suggested_target_file_path)
         """
         existing_schema_context, most_recent_sql_file = self._get_existing_db_schema_context()
+        
+        # Extract f-string expressions to avoid backslash errors
+        sql_context_text = f"Existing SQL Context (most recent migration first):\n{existing_schema_context}\n"
+        sql_context_guidance = f"Consider the following existing SQL schema context from your project. Adapt your new schema/migration to fit with this existing structure and style:\n{existing_schema_context}\n"
         
         # Check if this is a modification task
         is_modification = any(keyword in task_description.lower() for keyword in ["alter", "modify", "update", "add column", "drop column"])
@@ -178,7 +183,7 @@ class DbAgent(BaseAgent):
             should be a self-contained SQL snippet that can be appended to or inserted into such a file.
             If the change is complex, provide a full updated migration file.
             
-            {f"Existing SQL Context (most recent migration first):\n{existing_schema_context}\n" if existing_schema_context else ""}
+            {sql_context_text if existing_schema_context else ""}
 
             Generate the full, complete SQL code. Do NOT omit any parts or use placeholders like '...'.
             Do NOT include any explanatory text, comments outside the code, or formatting outside of the SQL content.
@@ -193,7 +198,7 @@ class DbAgent(BaseAgent):
             Include `CREATE TABLE`, `ALTER TABLE`, `CREATE INDEX`, or other relevant SQL statements.
             Ensure schemas are designed for efficient use with Supabase's API.
             
-            {f"Consider the following existing SQL schema context from your project. Adapt your new schema/migration to fit with this existing structure and style:\n{existing_schema_context}\n" if existing_schema_context else ""}
+            {sql_context_guidance if existing_schema_context else ""}
 
             Generate the full, complete SQL code. Do NOT omit any parts or use placeholders like '...'.
             Do NOT include any explanatory text, comments outside the code, or formatting outside of the SQL content.

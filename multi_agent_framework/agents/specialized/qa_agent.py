@@ -144,7 +144,8 @@ class QaAgent(BaseAgent):
                     content = f.read()
                     relative_path = os.path.relpath(file_path, self.project_root)
                     lang_highlight = "typescript" if file_path.endswith(('.tsx', '.ts')) else "javascript"
-                    context.append(f"--- Existing Test File: {relative_path} ---\n```{lang_highlight}\n{content}\n```\n")
+                    file_context = f"--- Existing Test File: {relative_path} ---\n```{lang_highlight}\n{content}\n```\n"
+                    context.append(file_context)
             except Exception as e:
                 print(f"ERROR: QaAgent - Could not read existing test code from {file_path} for context: {e}")
         return "\n".join(context), most_recent_file_path
@@ -156,6 +157,10 @@ class QaAgent(BaseAgent):
         """
         existing_tests_context, most_recent_test_file = self._get_existing_tests_context()
 
+        # Extract f-string expressions to avoid backslash errors
+        test_context_text = f"Existing Test Code Context (most recent file first):\n{existing_tests_context}\n"
+        test_context_guidance = f"Consider the following existing test code context from your project. Adapt your new test code to fit with this existing structure and style, importing necessary modules or components if they are present in the context:\n{existing_tests_context}\n"
+
         if is_modification and most_recent_test_file:
             prompt = f"""You are a Quality Assurance (QA) & Testing Agent specializing in Next.js (App Router) and React applications.
             Your task is to **modify an existing test file** to address the following requirement:
@@ -164,7 +169,7 @@ class QaAgent(BaseAgent):
             Consider the most recent existing test file provided in the context below. Your output should be the full,
             revised content of that file, integrating the new test cases or changes.
             
-            {f"Existing Test Code Context (most recent file first):\n{existing_tests_context}\n" if existing_tests_context else ""}
+            {test_context_text if existing_tests_context else ""}
 
             **Generate the full, complete code for the test file. Do NOT omit any parts or use placeholders like '...'**.
             Do NOT include any explanatory text, comments outside the code, or formatting outside of the test file content.
@@ -177,7 +182,7 @@ class QaAgent(BaseAgent):
 
             Provide a complete, runnable test file. Include necessary imports (e.g., `import React from 'react'`, `import {{ render, screen }} from '@testing-library/react'`, or Playwright imports).
             
-            {f"Consider the following existing test code context from your project. Adapt your new test code to fit with this existing structure and style, importing necessary modules or components if they are present in the context:\n{existing_tests_context}\n" if existing_tests_context else ""}
+            {test_context_guidance if existing_tests_context else ""}
 
             **Generate the full, complete code for the test file. Do NOT omit any parts or use placeholders like '...'**.
             Do NOT include any explanatory text, comments outside the code, or formatting outside of the test file content.

@@ -170,7 +170,8 @@ class SecurityAgent(BaseAgent):
                     lang_highlight = "markdown"
                     if file_path.endswith(('.ts', '.js')):
                         lang_highlight = "typescript" if file_path.endswith('.ts') else "javascript"
-                    context.append(f"--- Existing {os.path.basename(file_path)}: {relative_path} ---\n```{lang_highlight}\n{content}\n```\n")
+                    file_context = f"--- Existing {os.path.basename(file_path)}: {relative_path} ---\n```{lang_highlight}\n{content}\n```\n"
+                    context.append(file_context)
             except Exception as e:
                 print(f"ERROR: SecurityAgent - Could not read existing security reports/code from {file_path} for context: {e}")
         return "\n".join(context), most_recent_file_path
@@ -182,6 +183,10 @@ class SecurityAgent(BaseAgent):
         Returns (security_report, suggested_target_file_path)
         """
         existing_reports_context, most_recent_report_file = self._get_existing_security_reports_context()
+
+        # Extract f-string expressions to avoid backslash errors
+        security_context_text = f"Existing Security Context (most recent file first):\n{existing_reports_context}\n"
+        security_context_guidance = f"Consider the following existing security context from your project. Adapt your new analysis to build upon or align with these findings:\n{existing_reports_context}\n"
 
         # Check if this is a modification task
         is_modification = any(keyword in task_description.lower() for keyword in ["modify", "update", "add to existing", "revise", "re-evaluate"])
@@ -216,7 +221,7 @@ class SecurityAgent(BaseAgent):
             Consider the most recent existing security report file (or relevant code file) provided in the context below. Your output should be the full,
             revised content of that file, integrating the new analysis or changes.
             
-            {f"Existing Security Context (most recent file first):\n{existing_reports_context}\n" if existing_reports_context else ""}
+            {security_context_text if existing_reports_context else ""}
 
             Focus on security best practices for Next.js API routes, Supabase Row Level Security (RLS),
             secure handling of Supabase client keys and Stripe webhooks, and general web application security (e.g., OWASP Top 10).
@@ -232,7 +237,7 @@ class SecurityAgent(BaseAgent):
             Focus on security best practices for Next.js API routes, Supabase Row Level Security (RLS),
             secure handling of Supabase client keys and Stripe webhooks, and general web application security (e.g., OWASP Top 10).
             
-            {f"Consider the following existing security context from your project. Adapt your new analysis to build upon or align with these findings:\n{existing_reports_context}\n" if existing_reports_context else ""}
+            {security_context_guidance if existing_reports_context else ""}
 
             Provide a concise report in Markdown format, listing potential issues and general solutions.
             Do NOT include any text or formatting outside of the Markdown content.

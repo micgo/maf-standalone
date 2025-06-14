@@ -99,7 +99,8 @@ class BackendAgent(BaseAgent):
             self.send_message("orchestrator", task_id, "Attempting retry after reviewing error.", "status_update")
             
             original_task_description = self.state_manager.get_task(task_id)['description']
-            enhanced_description = f"{original_task_description}\n\nPrevious attempt failed with error: {error_content}\nPlease fix the issues and try again."
+            error_details = f"\n\nPrevious attempt failed with error: {error_content}\nPlease fix the issues and try again."
+            enhanced_description = f"{original_task_description}{error_details}"
             
             # Generate improved code
             generated_code = self._generate_backend_code(enhanced_description)
@@ -159,7 +160,8 @@ class BackendAgent(BaseAgent):
                     content = f.read()
                     relative_path = os.path.relpath(file_path, self.project_root)
                     lang_highlight = "typescript" if file_path.endswith(('.ts')) else "javascript"
-                    context.append(f"--- Existing File: {relative_path} ---\n```{lang_highlight}\n{content}\n```\n")
+                    file_context = f"--- Existing File: {relative_path} ---\n```{lang_highlight}\n{content}\n```\n"
+                    context.append(file_context)
             except Exception as e:
                 print(f"ERROR: BackendAgent - Could not read existing backend code from {file_path} for context: {e}")
         return "\n".join(context), most_recent_file_path
@@ -217,6 +219,9 @@ class BackendAgent(BaseAgent):
         """
         existing_code_context, _ = self._get_existing_backend_code_context()
         
+        # Extract f-string expressions to avoid backslash errors
+        code_context_guidance = f"Consider the following existing code context from your project. Adapt your new code to fit with this existing structure and style:\n{existing_code_context}\n"
+        
         # Extract resource info for service layer awareness
         resource_info = NamingConventions.extract_resource_from_task(task_description)
         service_import = ""
@@ -226,6 +231,9 @@ class BackendAgent(BaseAgent):
             resource_name = resource_info['resource']
             service_class = f"{resource_name.capitalize()}Service"
             service_import = f"\nImport the {service_class} from '@/lib/{resource_name}Service' to handle business logic."
+            service_layer_instruction = f"Since a service layer exists, use the {service_class} methods instead of direct database calls."
+        else:
+            service_layer_instruction = ""
         
         prompt = f"""You are a Backend Developer Agent specializing in Next.js API Routes (App Router style),
         the Supabase client library for PostgreSQL database interactions, and Stripe API for payments.
@@ -235,9 +243,9 @@ class BackendAgent(BaseAgent):
         {service_import}
         
         Include necessary imports and a basic API route setup (`export async function GET(request: Request) {{...}}` for specific HTTP methods).
-        {f"Since a service layer exists, use the {service_class} methods instead of direct database calls." if has_service else "Use Supabase client for database operations."}
+        {service_layer_instruction if has_service else "Use Supabase client for database operations."}
         
-        {f"Consider the following existing code context from your project. Adapt your new code to fit with this existing structure and style:\n{existing_code_context}\n" if existing_code_context else ""}
+        {code_context_guidance if existing_code_context else ""}
 
         Generate the full, complete code for the API route file. Do NOT omit any parts or use placeholders like '...'.
         Do NOT include any explanatory text, comments outside the code, or formatting outside of the API route content.

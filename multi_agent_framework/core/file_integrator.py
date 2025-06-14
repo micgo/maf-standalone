@@ -94,7 +94,8 @@ class FileIntegrator:
             return merged_content
         else:
             # New code is partial - integrate into existing
-            return f"{'\n'.join(merged_imports)}\n\n{existing}\n\n// --- Added Code ---\n{new}"
+            imports_str = '\n'.join(merged_imports)
+            return f"{imports_str}\n\n{existing}\n\n// --- Added Code ---\n{new}"
     
     def _merge_api_code(self, existing: str, new: str) -> str:
         """Merge API route code."""
