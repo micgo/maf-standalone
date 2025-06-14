@@ -88,6 +88,10 @@ class BaseAgent(ABC):
             raise ValueError(f"Unsupported model provider: {self.model_provider}")
         
     def _generate_response(self, prompt, max_tokens=1000):
+        # Test mode - return mock response
+        if os.getenv('MAF_TEST_MODE') == 'true':
+            return "Mock LLM response for testing"
+            
         if self.model_provider == "claude":
             try:
                 response = self.llm.messages.create(

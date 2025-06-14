@@ -118,6 +118,10 @@ class BaseAgent(ABC):
     
     def _generate_response(self, prompt, max_tokens=1000):
         """Generate response from LLM."""
+        # Test mode - return mock response
+        if os.getenv('MAF_TEST_MODE') == 'true':
+            return "Mock LLM response for testing"
+            
         if self.model_provider == "claude":
             try:
                 response = self.llm.messages.create(

@@ -34,11 +34,19 @@ jobs:
     
     - name: Run tests with coverage
       continue-on-error: true
+      env:
+        MAF_TEST_MODE: "true"
       run: |
-        # Run only the tests we know work
+        # Run tests with mocked LLM responses
         coverage run -m pytest tests/test_event_driven_agents.py || true
+        
+        # Generate coverage reports
         coverage report || true
         coverage xml || true
+        
+        # Show what we actually covered
+        echo "=== Coverage Summary ==="
+        coverage report --show-missing || true
     
     - name: Check coverage file exists
       run: |
