@@ -1,10 +1,57 @@
 # Multi-Agent Framework (MAF)
 
+[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code Coverage](https://img.shields.io/badge/coverage-18%25-red.svg)](./COVERAGE_REPORT.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
+[![GitHub Issues](https://img.shields.io/github/issues/micgo/maf-standalone)](https://github.com/micgo/maf-standalone/issues)
+[![GitHub Stars](https://img.shields.io/github/stars/micgo/maf-standalone)](https://github.com/micgo/maf-standalone/stargazers)
+
 An autonomous software development framework powered by AI agents that collaborate to build software projects.
+
+## 📋 Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Configuration](#configuration)
+- [CLI Commands](#cli-commands)
+- [Agent Roles](#agent-roles)
+- [Advanced Usage](#advanced-usage)
+- [Troubleshooting](#troubleshooting)
+- [Development](#development)
+- [License](#license)
+
+## 🚀 Project Status
+
+- **Current Version**: v0.1.1 (Early Development)
+- **Stability**: Beta - API may change
+- **Test Coverage**: 18% (Improving)
+- **Active Development**: Yes
 
 ## Overview
 
 The Multi-Agent Framework (MAF) is a Python-based framework that orchestrates multiple specialized AI agents to autonomously develop software. Each agent has a specific role and expertise, working together to implement features, fix bugs, and maintain code quality.
+
+## 🛠️ Supported Technologies
+
+### LLM Providers
+![Gemini](https://img.shields.io/badge/Google%20Gemini-4285F4?style=flat&logo=google&logoColor=white)
+![Claude](https://img.shields.io/badge/Anthropic%20Claude-8E4FF0?style=flat&logo=anthropic&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-74aa9c?style=flat&logo=openai&logoColor=white)
+
+### Frontend Frameworks
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat&logo=next.js&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black)
+![Vue.js](https://img.shields.io/badge/Vue.js-4FC08D?style=flat&logo=vue.js&logoColor=white)
+![Angular](https://img.shields.io/badge/Angular-DD0031?style=flat&logo=angular&logoColor=white)
+
+### Backend Frameworks
+![Django](https://img.shields.io/badge/Django-092E20?style=flat&logo=django&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white)
+![Express](https://img.shields.io/badge/Express.js-404D59?style=flat&logo=express&logoColor=white)
+![Spring](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=flat&logo=spring&logoColor=white)
 
 ## Features
 
@@ -21,13 +68,13 @@ The Multi-Agent Framework (MAF) is a Python-based framework that orchestrates mu
 - **Configurable**: Point the framework at any codebase with custom configuration
 - **Multiple LLM Support**: Works with OpenAI, Anthropic Claude, and Google Gemini
 
-## Installation
+## 📦 Installation
 
 ### Prerequisites
 
-- Python 3.8 or higher
-- pip package manager
-- At least one LLM API key (OpenAI, Anthropic, or Google Gemini)
+- ![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=flat&logo=python&logoColor=white) Python 3.8 or higher
+- 📦 pip package manager
+- 🔑 At least one LLM API key (OpenAI, Anthropic, or Google Gemini)
 
 ### Install from PyPI (Coming Soon)
 
@@ -54,11 +101,11 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -e .
 ```
 
-## Quick Start
+## 🚀 Quick Start
 
 > 📚 **[View the detailed Quick Start Guide](docs/QUICK_START.md)** for step-by-step instructions with examples!
 
-### 1. Initialize a Project
+### 1️⃣ Initialize a Project
 
 Navigate to your project directory and initialize MAF:
 
@@ -72,7 +119,7 @@ This creates:
 - `.env.example` - Template for API keys
 - Framework directories for state and message queues
 
-### 2. Configure API Keys
+### 2️⃣ Configure API Keys
 
 Copy `.env.example` to `.env` and add your API keys:
 
@@ -88,7 +135,7 @@ ANTHROPIC_API_KEY=your_anthropic_api_key_here
 OPENAI_API_KEY=your_openai_api_key_here
 ```
 
-### 3. Launch Agents
+### 3️⃣ Launch Agents
 
 Start the multi-agent framework:
 
@@ -98,13 +145,15 @@ maf launch
 
 This starts all configured agents in event-driven mode.
 
-### 4. Trigger Development
+### 4️⃣ Trigger Development
 
 Request a new feature:
 
 ```bash
 maf trigger "Add user authentication with email and password"
 ```
+
+🎉 **That's it!** The agents will collaborate to implement your feature.
 
 ## Configuration
 
@@ -322,32 +371,45 @@ Ensure the package is installed correctly:
 pip install -e .
 ```
 
-## Development
+## 🧪 Development
 
 ### Running Tests
 
 ```bash
+# Run all tests
 python -m pytest tests/
+
+# Run with coverage
+python -m pytest --cov=multi_agent_framework tests/
+
+# Run specific test
+python -m pytest tests/test_event_driven_agents.py
 ```
 
-### Contributing
+### 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-## License
+1. 🍴 Fork the repository
+2. 🌿 Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. 💻 Make your changes
+4. ✅ Run tests (`python -m pytest`)
+5. 📝 Commit your changes (`git commit -m 'Add amazing feature'`)
+6. 📤 Push to the branch (`git push origin feature/amazing-feature`)
+7. 🎯 Open a Pull Request
 
-MIT License - see LICENSE file for details
+## 📄 License
 
-## Support
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-- GitHub Issues: [Report bugs and request features](https://github.com/micgo/maf-standalone/issues)
-- Wiki: [Full documentation](https://github.com/micgo/maf-standalone/wiki)
-- Discussions: [Join the conversation](https://github.com/micgo/maf-standalone/discussions)
+## 💬 Support & Community
 
-## Acknowledgments
+- 🐛 **Issues**: [Report bugs and request features](https://github.com/micgo/maf-standalone/issues)
+- 📖 **Wiki**: [Full documentation](https://github.com/micgo/maf-standalone/wiki)
+- 💡 **Discussions**: [Join the conversation](https://github.com/micgo/maf-standalone/discussions)
+- ⭐ **Star us**: If you find this project useful!
+
+## 🙏 Acknowledgments
 
 Built with:
 - Google Gemini API

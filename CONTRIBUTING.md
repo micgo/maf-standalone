@@ -1,154 +1,123 @@
 # Contributing to Multi-Agent Framework
 
-Thank you for your interest in contributing to the Multi-Agent Framework! We welcome contributions from the community and are excited to collaborate with you.
-
-## Code of Conduct
-
-By participating in this project, you agree to be respectful and constructive in all interactions. We expect all contributors to:
-
-- Be welcoming and inclusive
-- Respect differing viewpoints and experiences
-- Accept constructive criticism gracefully
-- Focus on what's best for the community
+Thank you for your interest in contributing to MAF! We welcome contributions from the community.
 
 ## How to Contribute
 
-### Reporting Issues
+### Reporting Bugs
 
-1. Check if the issue already exists in the [issue tracker](https://github.com/micgo/maf-standalone/issues)
+1. Check if the bug has already been reported in [Issues](https://github.com/micgo/maf-standalone/issues)
 2. If not, create a new issue with:
-   - Clear, descriptive title
-   - Steps to reproduce (if applicable)
+   - Clear title and description
+   - Steps to reproduce
    - Expected vs actual behavior
-   - System information (Python version, OS, etc.)
-   - Error messages or logs
+   - System information (OS, Python version, MAF version)
+   - Error logs
 
 ### Suggesting Features
 
-1. Check existing issues and discussions for similar ideas
-2. Open a new issue with the "feature request" label
-3. Describe the feature and its use case
-4. Explain why it would benefit the project
+1. Check [Discussions](https://github.com/micgo/maf-standalone/discussions) for similar ideas
+2. Create a new discussion or issue with:
+   - Clear description of the feature
+   - Use cases and benefits
+   - Potential implementation approach
 
-### Contributing Code
+### Code Contributions
 
-#### Setup Development Environment
-
-1. Fork the repository
-2. Clone your fork:
+1. **Fork the Repository**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/maf-standalone.git
+   git clone https://github.com/your-username/maf-standalone.git
    cd maf-standalone
    ```
-3. Create a virtual environment:
+
+2. **Set Up Development Environment**
    ```bash
    python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-4. Install in development mode:
-   ```bash
+   source venv/bin/activate  # Windows: venv\Scripts\activate
    pip install -e ".[dev]"
    ```
 
-#### Development Workflow
-
-1. Create a feature branch:
+3. **Create a Feature Branch**
    ```bash
    git checkout -b feature/your-feature-name
    ```
-2. Make your changes
-3. Write or update tests
-4. Run tests:
+
+4. **Make Your Changes**
+   - Follow existing code style
+   - Add tests for new functionality
+   - Update documentation as needed
+
+5. **Run Tests**
    ```bash
-   python test_framework.py
-   pytest tests/
-   ```
-5. Format your code:
-   ```bash
-   black --line-length 100 .
-   ```
-6. Check types (if applicable):
-   ```bash
-   mypy multi_agent_framework/
-   ```
-7. Commit with clear messages:
-   ```bash
-   git commit -m "feat: add new feature X"
+   python -m pytest tests/
+   python -m pytest --cov=multi_agent_framework tests/  # With coverage
    ```
 
-#### Pull Request Process
+6. **Commit Your Changes**
+   ```bash
+   git add .
+   git commit -m "feat: Add your feature description"
+   ```
 
-1. Push to your fork:
+   Follow conventional commit format:
+   - `feat:` New feature
+   - `fix:` Bug fix
+   - `docs:` Documentation changes
+   - `test:` Test additions/changes
+   - `refactor:` Code refactoring
+   - `chore:` Maintenance tasks
+
+7. **Push and Create Pull Request**
    ```bash
    git push origin feature/your-feature-name
    ```
-2. Create a Pull Request on GitHub
-3. Fill out the PR template completely
-4. Ensure all CI checks pass
-5. Wait for review and address feedback
-
-### Commit Message Convention
-
-We follow conventional commits format:
-
-- `feat:` New features
-- `fix:` Bug fixes
-- `docs:` Documentation changes
-- `style:` Code style changes (formatting, etc.)
-- `refactor:` Code refactoring
-- `test:` Test additions or changes
-- `chore:` Maintenance tasks
-
-Examples:
-```
-feat: add support for custom agent configurations
-fix: resolve task assignment deadlock issue
-docs: update README with new CLI commands
-```
+   Then create a PR on GitHub.
 
 ## Development Guidelines
 
 ### Code Style
 
-- Follow PEP 8 with 100-character line limit
+- Follow PEP 8
 - Use type hints where appropriate
-- Write descriptive variable and function names
-- Add docstrings to all public functions and classes
+- Add docstrings to functions and classes
+- Keep functions focused and small
 
 ### Testing
 
 - Write tests for new features
 - Maintain or improve code coverage
 - Test edge cases and error conditions
-- Use descriptive test names
 
 ### Documentation
 
-- Update README.md for user-facing changes
-- Add inline comments for complex logic
-- Update API documentation if applicable
+- Update README.md if needed
+- Add/update wiki pages for new features
 - Include examples in docstrings
 
-## Architecture Decisions
+## Areas for Contribution
 
-When proposing significant changes:
+### Good First Issues
 
-1. Open an issue for discussion first
-2. Consider backward compatibility
-3. Think about performance implications
-4. Ensure changes align with project goals
+Look for issues labeled `good first issue` - these are great for newcomers!
 
-## Getting Help
+### Priority Areas
 
-- Check the [documentation](https://github.com/micgo/maf-standalone/wiki)
-- Ask questions in [GitHub Discussions](https://github.com/micgo/maf-standalone/discussions)
-- Join our community chat (if available)
+1. **Testing**: Increase code coverage (currently 18%)
+2. **Documentation**: Improve guides and examples
+3. **Agent Development**: Enhance existing agents or create new ones
+4. **CLI Features**: Add new commands and options
+5. **Integration**: Support for more frameworks
 
-## Recognition
+### Roadmap Items
 
-Contributors will be recognized in:
-- The project's contributors list
-- Release notes for significant contributions
-- Special mentions for exceptional contributions
+Check [ROADMAP.md](ROADMAP.md) for planned features and improvements.
 
-Thank you for helping make the Multi-Agent Framework better!
+## Questions?
+
+- Ask in [Discussions](https://github.com/micgo/maf-standalone/discussions)
+- Reach out in issues
+- Check the [Wiki](https://github.com/micgo/maf-standalone/wiki)
+
+## License
+
+By contributing, you agree that your contributions will be licensed under the MIT License.
