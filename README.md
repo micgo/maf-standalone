@@ -28,7 +28,7 @@ An autonomous software development framework powered by AI agents that collabora
 
 - **Current Version**: v0.1.1 (Early Development)
 - **Stability**: Beta - API may change
-- **Test Coverage**: 18% (Improving)
+- **Test Coverage**: 43%+ (↑ from 4% - [See Report](docs/TEST_COVERAGE_REPORT.md))
 - **Active Development**: Yes
 
 ## Overview
@@ -405,6 +405,22 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 5. 📝 Commit your changes (`git commit -m 'Add amazing feature'`)
 6. 📤 Push to the branch (`git push origin feature/amazing-feature`)
 7. 🎯 Open a Pull Request
+
+## 📚 Documentation
+
+### Project Documentation
+- [Immediate Tasks](IMMEDIATE_TASKS.md) - Current sprint priorities
+- [Roadmap](ROADMAP.md) - Long-term vision and milestones
+- [Contributing Guide](CONTRIBUTING.md) - How to contribute
+
+### Testing Documentation
+- [Test Coverage Report](docs/TEST_COVERAGE_REPORT.md) - Comprehensive testing progress (4% → 43%!)
+- [Test Metrics Dashboard](docs/TEST_METRICS_DASHBOARD.md) - Visual coverage metrics and KPIs
+- [Testing Guide](TESTING_GUIDE.md) - How to run and write tests
+
+### API Documentation
+- [Wiki](https://github.com/micgo/maf-standalone/wiki) - Full API documentation
+- [Examples](examples/) - Code examples and tutorials
 
 ## 📄 License
 

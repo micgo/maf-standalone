@@ -50,8 +50,8 @@ jobs:
         # Run a simple import test first
         python -c "from multi_agent_framework import config; print('Config import successful')"
         
-        # Run the actual tests
-        pytest tests/test_event_driven_agents.py -v --tb=short || echo "Some tests failed - expected during development"
+        # Run the deployment test suite
+        pytest tests/test_deployment_suite.py -v --tb=short || echo "Some tests failed - expected during development"
     
     - name: Basic functionality test
       run: |

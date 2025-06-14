@@ -63,9 +63,9 @@ def pytest_collection_modifyitems(config, items):
         # Skip tests known to hang on Python 3.13
         problematic_tests = [
             "test_kafka",
-            "test_working_flow",
+            "test_working_flow", 
             "test_real_feature",
-            "test_event_driven_integration"
+            "test_event_driven_integration.py"  # Only skip the original file, not fixed version
         ]
         
         for item in items:

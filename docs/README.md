@@ -26,6 +26,14 @@ Development guides and practices:
 ### 📋 [Recent Changes](./recent-changes.md)
 Summary of recent updates and improvements to the framework.
 
+### 📊 Test Coverage Documentation
+Comprehensive test coverage improvements and metrics:
+- **[Test Documentation Index](./TEST_DOCUMENTATION_INDEX.md)** - Quick access to all test docs
+- **[Test Coverage Report](./TEST_COVERAGE_REPORT.md)** - Detailed analysis of coverage improvements (4% → 43%+)
+- **[Test Metrics Dashboard](./TEST_METRICS_DASHBOARD.md)** - Visual metrics, KPIs, and progress tracking
+- **[Testing Guide](../TESTING_GUIDE.md)** - How to run and write tests
+- **[Improvement Plan](../TEST_IMPROVEMENT_PLAN.md)** - Roadmap to 80% coverage
+
 ## External Documentation
 
 ### 📚 GitHub Wiki
