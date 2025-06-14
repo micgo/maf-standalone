@@ -4,7 +4,7 @@
 
 This roadmap outlines the development priorities for the Multi-Agent Framework (MAF) to evolve from a functional prototype to a production-ready autonomous development system.
 
-## Current State (v0.1.1)
+## Current State (v0.1.2)
 
 ### ✅ Completed
 - Core event-driven architecture with in-memory event bus
@@ -16,12 +16,18 @@ This roadmap outlines the development priorities for the Multi-Agent Framework (
 - Smart code integration and file management
 - **Fixed event-driven inbox message processing** ✅
 - **Comprehensive test suite for event-driven agents** ✅
+- **Python 3.10+ support with 3.13 compatibility** ✅
+- **Migrated to google-genai package** ✅
+- **Kafka integration (kafka-python is now core dependency)** ✅
+- **Comprehensive integration test coverage** ✅
+- **Centralized error handling with user-friendly messages** ✅
+- **LLM mocking for tests (MAF_TEST_MODE)** ✅
 
 ### ⚠️ Gaps
-- Incomplete Kafka integration (kafka-python dependency missing)
-- Limited integration test coverage
 - No production deployment features
 - No real-time monitoring dashboard
+- Limited CLI test coverage
+- No progress indicators in CLI
 
 ## Phase 1: Core Completion (Q1 2025)
 
@@ -61,26 +67,28 @@ This roadmap outlines the development priorities for the Multi-Agent Framework (
 - [ ] Add retry mechanism for failed event processing
 - [ ] Create migration tool from polling to event-driven mode
 
-### 1.3 Complete Kafka Integration
-**Priority: Medium | Timeline: 2 weeks**
+### 1.3 ✅ Complete Kafka Integration
+**Status: COMPLETED**
 
-- [ ] Add kafka-python to requirements.txt
-- [ ] Complete KafkaEventBus implementation
-- [ ] Add Kafka configuration to project config
-- [ ] Create Docker Compose setup for local Kafka
-- [ ] Add Kafka connection health checks
+- [x] Add kafka-python to requirements.txt (now in pyproject.toml)
+- [x] Complete KafkaEventBus implementation
+- [x] Add Kafka configuration to project config
+- [x] Add Kafka connection health checks
+- [x] Comprehensive Kafka event bus tests with skip decorators
+- [ ] Create Docker Compose setup for local Kafka (remaining)
 
 ## Phase 2: Production Readiness (Q2 2025)
 
 ### 2.1 Comprehensive Testing
 **Priority: High | Timeline: 3 weeks**
 
-- [ ] Unit tests for all specialized agents
-- [ ] Integration tests for event bus implementations
+- [x] Unit tests for all specialized agents
+- [x] Integration tests for event bus implementations
+- [x] Test coverage reporting (fixed with MAF_TEST_MODE)
 - [ ] End-to-end feature development tests
 - [ ] Performance and load testing framework
 - [ ] Model provider failover testing
-- [ ] Add test coverage reporting (target: 80%+)
+- [ ] Achieve 80%+ test coverage
 
 ### 2.2 Enhanced CLI Features
 **Priority: Medium | Timeline: 2 weeks**
@@ -105,6 +113,9 @@ This roadmap outlines the development priorities for the Multi-Agent Framework (
 ### 2.4 Error Handling & Recovery
 **Priority: High | Timeline: 2 weeks**
 
+- [x] Centralized error handling system
+- [x] User-friendly error messages
+- [x] Context-aware error suggestions
 - [ ] Automatic retry with exponential backoff
 - [ ] Circuit breaker for model providers
 - [ ] Task checkpoint and resume
@@ -241,10 +252,10 @@ This roadmap outlines the development priorities for the Multi-Agent Framework (
 ## Technical Debt Items
 
 ### Immediate
-- [ ] Standardize error handling across agents
+- [x] Standardize error handling across agents (centralized handler implemented)
+- [x] Update deprecated dependencies (migrated to google-genai)
 - [ ] Refactor message bus interface
 - [ ] Consolidate configuration systems
-- [ ] Update deprecated dependencies
 
 ### Short-term
 - [ ] Improve type hints coverage
@@ -264,6 +275,7 @@ See CONTRIBUTING.md for how to contribute to these roadmap items. Priority items
 
 ## Version Plan
 
+- **v0.1.2** - Current release (Error handling, Python 3.10+, Integration tests)
 - **v0.2.0** - Phase 1 completion (Event-driven agents)
 - **v0.3.0** - Phase 2 completion (Production ready)
 - **v0.4.0** - Phase 3 completion (Enhanced features)
