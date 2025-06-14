@@ -18,72 +18,69 @@ def test_message_bus():
     """Test the message bus functionality."""
     print("🔄 Testing Message Bus...")
     
-    try:
-        bus = MessageBus()
-        
-        # Send a test message
-        test_message = {
-            "sender": "test_script",
-            "recipient": "orchestrator_agent", 
-            "type": "test",
-            "content": "Hello from test script",
-            "timestamp": time.time()
-        }
-        
-        bus.send_message("orchestrator_agent", test_message)
-        print("✅ Message sent successfully")
-        
-        # Try to receive messages
-        messages = bus.receive_messages("test_script")
-        print(f"📥 Received {len(messages)} messages")
-        
-        return True
-    except Exception as e:
-        print(f"❌ Message bus test failed: {e}")
-        return False
+    bus = MessageBus()
+    
+    # Send a test message
+    test_message = {
+        "sender": "test_script",
+        "recipient": "orchestrator_agent", 
+        "type": "test",
+        "content": "Hello from test script",
+        "timestamp": time.time()
+    }
+    
+    bus.send_message("orchestrator_agent", test_message)
+    print("✅ Message sent successfully")
+    
+    # Try to receive messages
+    messages = bus.receive_messages("test_script")
+    print(f"📥 Received {len(messages)} messages")
+    
+    # Add proper assertions
+    assert isinstance(bus, MessageBus)
+    assert isinstance(messages, list)
 
 def test_project_state():
     """Test the project state manager."""
     print("🗄️  Testing Project State Manager...")
     
-    try:
-        state_manager = ProjectStateManager()
-        
-        # Get current state
-        stats = state_manager.get_task_statistics()
-        print(f"📊 Total tasks: {stats['total_tasks']}")
-        print(f"📈 Completion rate: {stats['completion_rate']:.1%}")
-        
-        # Test health check
-        health = state_manager.task_health_check()
-        status = "🟢 HEALTHY" if health['healthy'] else "🔴 ISSUES"
-        print(f"🏥 System health: {status}")
-        
-        return True
-    except Exception as e:
-        print(f"❌ Project state test failed: {e}")
-        return False
+    state_manager = ProjectStateManager()
+    
+    # Get current state
+    stats = state_manager.get_task_statistics()
+    print(f"📊 Total tasks: {stats['total_tasks']}")
+    print(f"📈 Completion rate: {stats['completion_rate']:.1%}")
+    
+    # Test health check
+    health = state_manager.task_health_check()
+    status = "🟢 HEALTHY" if health['healthy'] else "🔴 ISSUES"
+    print(f"🏥 System health: {status}")
+    
+    # Add proper assertions
+    assert isinstance(state_manager, ProjectStateManager)
+    assert isinstance(stats, dict)
+    assert 'total_tasks' in stats
+    assert 'completion_rate' in stats
+    assert isinstance(health, dict)
+    assert 'healthy' in health
 
 def test_agent_import():
     """Test importing agent classes."""
     print("🤖 Testing Agent Imports...")
     
-    try:
-        from multi_agent_framework.agents.orchestrator_agent import OrchestratorAgent
-        print("✅ Orchestrator agent imported")
-        
-        from multi_agent_framework.agents.specialized.frontend_agent import FrontendAgent
-        print("✅ Frontend agent imported")
-        
-        from multi_agent_framework.agents.specialized.backend_agent import BackendAgent  
-        print("✅ Backend agent imported")
-        
-        return True
-    except Exception as e:
-        print(f"❌ Agent import test failed: {e}")
-        import traceback
-        traceback.print_exc()
-        return False
+    from multi_agent_framework.agents.orchestrator_agent import OrchestratorAgent
+    print("✅ Orchestrator agent imported")
+    
+    from multi_agent_framework.agents.specialized.frontend_agent import FrontendAgent
+    print("✅ Frontend agent imported")
+    
+    from multi_agent_framework.agents.specialized.backend_agent import BackendAgent  
+    print("✅ Backend agent imported")
+    
+    # Add proper assertions
+    assert OrchestratorAgent is not None
+    assert FrontendAgent is not None
+    assert BackendAgent is not None
 
 def check_environment():
     """Check environment setup."""

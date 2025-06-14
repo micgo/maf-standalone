@@ -29,7 +29,21 @@ def test_orchestrator():
     
     # Test the feature breakdown
     print("\n=== Testing Feature Breakdown ===")
-    orchestrator._break_down_feature("test-123", "Create a simple login page")
+    
+    # Initialize the feature first
+    feature_id = "test-123"
+    orchestrator._features[feature_id] = {
+        'id': feature_id,
+        'description': "Create a simple login page",
+        'status': 'pending'
+    }
+    
+    # Now break it down
+    orchestrator._break_down_feature(feature_id, "Create a simple login page")
+    
+    # Check results
+    assert feature_id in orchestrator._features
+    assert orchestrator._features[feature_id]['status'] in ['in_progress', 'failed']
     
 
 if __name__ == "__main__":

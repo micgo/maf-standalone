@@ -1,0 +1,284 @@
+============================= test session starts ==============================
+collecting ... collected 81 items
+
+tests/unit/test_agent_communication.py::test_message_bus FAILED          [  1%]
+tests/unit/test_agent_communication.py::test_project_state FAILED        [  2%]
+tests/unit/test_agent_communication.py::test_agent_import FAILED         [  3%]
+tests/unit/test_cli.py::TestCLI::test_cli_help PASSED                    [  4%]
+tests/unit/test_cli.py::TestCLI::test_cli_version PASSED                 [  6%]
+tests/unit/test_cli.py::TestCLI::test_command_help PASSED                [  7%]
+tests/unit/test_cli.py::TestCLI::test_config_get PASSED                  [  8%]
+tests/unit/test_cli.py::TestCLI::test_config_set PASSED                  [  9%]
+tests/unit/test_cli.py::TestCLI::test_config_set_json PASSED             [ 11%]
+tests/unit/test_cli.py::TestCLI::test_error_handling PASSED              [ 12%]
+tests/unit/test_cli.py::TestCLI::test_init_command PASSED                [ 13%]
+tests/unit/test_cli.py::TestCLI::test_init_nonexistent_path PASSED       [ 14%]
+tests/unit/test_cli.py::TestCLI::test_init_with_options PASSED           [ 16%]
+tests/unit/test_cli.py::TestCLI::test_init_with_path PASSED              [ 17%]
+tests/unit/test_cli.py::TestCLI::test_launch_command PASSED              [ 18%]
+tests/unit/test_cli.py::TestCLI::test_launch_with_agents PASSED          [ 19%]
+tests/unit/test_cli.py::TestCLI::test_launch_with_mode PASSED            [ 20%]
+tests/unit/test_cli.py::TestCLI::test_launch_without_init PASSED         [ 22%]
+tests/unit/test_cli.py::TestCLI::test_reset_command FAILED               [ 23%]
+tests/unit/test_cli.py::TestCLI::test_reset_without_confirmation PASSED  [ 24%]
+tests/unit/test_cli.py::TestCLI::test_status_command FAILED              [ 25%]
+tests/unit/test_cli.py::TestCLI::test_trigger_command PASSED             [ 27%]
+tests/unit/test_cli.py::TestCLI::test_trigger_without_description PASSED [ 28%]
+tests/unit/test_cli.py::TestCLI::test_verbose_mode PASSED                [ 29%]
+tests/unit/test_cli_basic.py::TestCLIBasic::test_command_help_messages PASSED [ 30%]
+tests/unit/test_cli_basic.py::TestCLIBasic::test_help PASSED             [ 32%]
+tests/unit/test_cli_basic.py::TestCLIBasic::test_init_already_initialized PASSED [ 33%]
+tests/unit/test_cli_basic.py::TestCLIBasic::test_init_creates_files PASSED [ 34%]
+tests/unit/test_cli_basic.py::TestCLIBasic::test_init_with_custom_name PASSED [ 35%]
+tests/unit/test_cli_basic.py::TestCLIBasic::test_init_with_project_type PASSED [ 37%]
+tests/unit/test_cli_basic.py::TestCLIBasic::test_reset_requires_confirmation PASSED [ 38%]
+tests/unit/test_cli_basic.py::TestCLIBasic::test_reset_with_yes_flag PASSED [ 39%]
+tests/unit/test_cli_basic.py::TestCLIBasic::test_status_basic PASSED     [ 40%]
+tests/unit/test_cli_basic.py::TestCLIBasic::test_status_json_format PASSED [ 41%]
+tests/unit/test_cli_basic.py::TestCLIBasic::test_trigger_requires_description PASSED [ 43%]
+tests/unit/test_cli_basic.py::TestCLIBasic::test_unknown_command PASSED  [ 44%]
+tests/unit/test_cli_basic.py::TestCLIBasic::test_version PASSED          [ 45%]
+tests/unit/test_cli_safe.py::TestCLISafe::test_cli_help PASSED           [ 46%]
+tests/unit/test_cli_safe.py::TestCLISafe::test_cli_version PASSED        [ 48%]
+tests/unit/test_cli_safe.py::TestCLISafe::test_init_command PASSED       [ 49%]
+tests/unit/test_cli_safe.py::TestCLISafe::test_modes_command PASSED      [ 50%]
+tests/unit/test_cli_safe.py::TestCLISafe::test_reset_command PASSED      [ 51%]
+tests/unit/test_cli_safe.py::TestCLISafe::test_status_command PASSED     [ 53%]
+tests/unit/test_cli_safe.py::TestCLISafe::test_trigger_command PASSED    [ 54%]
+tests/unit/test_cli_scenarios.py::TestCLIScenarios::test_config_nested_operations FAILED [ 55%]
+tests/unit/test_cli_scenarios.py::TestCLIScenarios::test_environment_variables PASSED [ 56%]
+tests/unit/test_cli_scenarios.py::TestCLIScenarios::test_error_recovery FAILED [ 58%]
+tests/unit/test_cli_scenarios.py::TestCLIScenarios::test_full_workflow FAILED [ 59%]
+tests/unit/test_cli_scenarios.py::TestCLIScenarios::test_help_consistency PASSED [ 60%]
+tests/unit/test_cli_scenarios.py::TestCLIScenarios::test_invalid_json_handling FAILED [ 61%]
+tests/unit/test_cli_scenarios.py::TestCLIScenarios::test_json_output_formats PASSED [ 62%]
+tests/unit/test_cli_scenarios.py::TestCLIScenarios::test_multiple_projects PASSED [ 64%]
+tests/unit/test_cli_scenarios.py::TestCLIScenarios::test_path_handling PASSED [ 65%]
+tests/unit/test_cli_scenarios.py::TestCLIScenarios::test_reinit_existing_project FAILED [ 66%]
+tests/unit/test_error_handling.py::test_api_key_errors PASSED            [ 67%]
+tests/unit/test_error_handling.py::test_network_errors PASSED            [ 69%]
+tests/unit/test_error_handling.py::test_task_errors PASSED               [ 70%]
+tests/unit/test_error_handling.py::test_file_errors PASSED               [ 71%]
+tests/unit/test_error_handling.py::test_agent_errors PASSED              [ 72%]
+tests/unit/test_error_handling.py::test_configuration_errors PASSED      [ 74%]
+tests/unit/test_error_handling.py::test_dependency_errors PASSED         [ 75%]
+tests/unit/test_event_driven_simple.py::test_simple PASSED               [ 76%]
+tests/unit/test_kafka_event_bus.py::KafkaEventBusTest::test_different_event_types SKIPPED [ 77%]
+tests/unit/test_kafka_event_bus.py::KafkaEventBusTest::test_error_handling SKIPPED [ 79%]
+tests/unit/test_kafka_event_bus.py::KafkaEventBusTest::test_event_persistence SKIPPED [ 80%]
+tests/unit/test_kafka_event_bus.py::KafkaEventBusTest::test_graceful_shutdown SKIPPED [ 81%]
+tests/unit/test_kafka_event_bus.py::KafkaEventBusTest::test_high_volume_events SKIPPED [ 82%]
+tests/unit/test_kafka_event_bus.py::KafkaEventBusTest::test_multiple_subscribers SKIPPED [ 83%]
+tests/unit/test_kafka_event_bus.py::KafkaEventBusTest::test_publish_and_subscribe SKIPPED [ 85%]
+tests/unit/test_kafka_event_bus.py::EventBusFactoryTest::test_inmemory_event_bus_creation SKIPPED [ 86%]
+tests/unit/test_kafka_event_bus.py::EventBusFactoryTest::test_invalid_event_bus_type SKIPPED [ 87%]
+tests/unit/test_kafka_event_bus.py::EventBusFactoryTest::test_kafka_event_bus_creation SKIPPED [ 88%]
+tests/unit/test_progress_tracker.py::TestProgressTracker::test_complete_task PASSED [ 90%]
+tests/unit/test_progress_tracker.py::TestProgressTracker::test_create_feature PASSED [ 91%]
+tests/unit/test_progress_tracker.py::TestProgressTracker::test_create_task PASSED [ 92%]
+tests/unit/test_progress_tracker.py::TestProgressTracker::test_display_progress_cli PASSED [ 93%]
+tests/unit/test_progress_tracker.py::TestProgressTracker::test_format_duration PASSED [ 95%]
+tests/unit/test_progress_tracker.py::TestProgressTracker::test_get_active_features_count PASSED [ 96%]
+tests/unit/test_progress_tracker.py::TestProgressTracker::test_multiple_tasks_progress PASSED [ 97%]
+tests/unit/test_progress_tracker.py::TestProgressTracker::test_update_task_progress PASSED [ 98%]
+tests/unit/test_simple_orchestrator.py::test_orchestrator FAILED         [100%]
+
+=================================== FAILURES ===================================
+_______________________________ test_message_bus _______________________________
+Expected None, but test returned True. Did you mean to use `assert` instead of `return`?
+----------------------------- Captured stdout call -----------------------------
+🔄 Testing Message Bus...
+Message sent to orchestrator_agent: Type='test', TaskID='None'
+✅ Message sent successfully
+📥 Received 0 messages
+______________________________ test_project_state ______________________________
+Expected None, but test returned True. Did you mean to use `assert` instead of `return`?
+----------------------------- Captured stdout call -----------------------------
+🗄️  Testing Project State Manager...
+📊 Total tasks: 8
+📈 Completion rate: 50.0%
+🏥 System health: 🟢 HEALTHY
+______________________________ test_agent_import _______________________________
+Expected None, but test returned True. Did you mean to use `assert` instead of `return`?
+----------------------------- Captured stdout call -----------------------------
+🤖 Testing Agent Imports...
+✅ Orchestrator agent imported
+✅ Frontend agent imported
+✅ Backend agent imported
+__________________________ TestCLI.test_reset_command __________________________
+tests/unit/test_cli.py:217: in test_reset_command
+    self.assertIn('Reset complete', result.output)
+E   AssertionError: 'Reset complete' not found in '🔄 Resetting framework state...\n✓ Cleared message queues\n✓ Removed state file\n✓ Cleared logs\n\n✅ Framework state reset successfully\n'
+_________________________ TestCLI.test_status_command __________________________
+tests/unit/test_cli.py:199: in test_status_command
+    self.assertEqual(result.exit_code, 0)
+E   AssertionError: 2 != 0
+________________ TestCLIScenarios.test_config_nested_operations ________________
+tests/unit/test_cli_scenarios.py:95: in test_config_nested_operations
+    self.assertEqual(result.exit_code, 0)
+E   AssertionError: 2 != 0
+_____________________ TestCLIScenarios.test_error_recovery _____________________
+tests/unit/test_cli_scenarios.py:178: in test_error_recovery
+    self.assertIn('error', result.output.lower())
+E   AssertionError: 'error' not found in "warning: failed to load config from /private/var/folders/pj/7j_fd4sx6rqd64p68p35d10m0000gn/t/tmp5ch2ta9e/tmps6x7rsu5/.maf-config.json: expecting value: line 1 column 13 (char 12)\nusing default configuration\n📊 multi-agent framework status\n   project: tmps6x7rsu5\n\n📬 message queues:\n\n📋 no features in progress (use 'maf trigger' to start)\n\n🤖 agent health check:\n   enabled agents: 9\n\n⚙️  configuration:\n   default mode: polling\n   default model: gemini\n   event bus: in_memory\n"
+_____________________ TestCLIScenarios.test_full_workflow ______________________
+tests/unit/test_cli_scenarios.py:46: in test_full_workflow
+    self.assertEqual(result.exit_code, 0)
+E   AssertionError: 2 != 0
+_________________ TestCLIScenarios.test_invalid_json_handling __________________
+tests/unit/test_cli_scenarios.py:115: in test_invalid_json_handling
+    self.assertIn('invalid', result.output.lower())
+E   AssertionError: 'invalid' not found in "usage: cli config [options]\ntry 'cli config --help' for help.\n\nerror: got unexpected extra arguments (set test_array [1,2,3)\n"
+________________ TestCLIScenarios.test_reinit_existing_project _________________
+tests/unit/test_cli_scenarios.py:85: in test_reinit_existing_project
+    self.assertNotEqual(result.exit_code, 0)
+E   AssertionError: 0 == 0
+______________________________ test_orchestrator _______________________________
+multi_agent_framework/agents/event_driven_orchestrator_agent.py:137: in _break_down_feature
+    self._features[feature_id]['status'] = 'in_progress'
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'test-123'
+
+During handling of the above exception, another exception occurred:
+tests/unit/test_simple_orchestrator.py:32: in test_orchestrator
+    orchestrator._break_down_feature("test-123", "Create a simple login page")
+multi_agent_framework/agents/event_driven_orchestrator_agent.py:184: in _break_down_feature
+    self._features[feature_id]['status'] = 'failed'
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'test-123'
+----------------------------- Captured stdout call -----------------------------
+=== Testing Orchestrator LLM ===
+
+Testing LLM with prompt: Say hello in JSON format: {"message": "your message"}
+Response: ```json
+{
+  "message": "Hello"
+}
+```
+
+=== Testing Feature Breakdown ===
+Orchestrator: Calling LLM to break down feature...
+Orchestrator: LLM response received: ```json
+[
+  {
+    "agent": "ux_ui_agent",
+    "description": "Design the wireframe and high-fidelity...
+Orchestrator: Failed to parse tasks: 'test-123'
+Orchestrator: Raw response: ```json
+[
+  {
+    "agent": "ux_ui_agent",
+    "description": "Design the wireframe and high-fidelity mockup for the login page, including states for error messages and success."
+  },
+  {
+    "agent": "db_agent",
+    "description": "Define and create the 'users' table schema, ensuring it includes columns for email and a securely hashed password."
+  },
+  {
+    "agent": "db_agent",
+    "description": "Add a unique index to the user's email column to ensure fast lookups during authentication."
+  },
+  {
+    "agent": "security_agent",
+    "description": "Define the password hashing and salting policy (e.g., using bcrypt) for storing user credentials securely."
+  },
+  {
+    "agent": "security_agent",
+    "description": "Review the proposed authentication flow for vulnerabilities such as insecure token storage, user enumeration, and timing attacks."
+  },
+  {
+    "agent": "backend_agent",
+    "description": "Develop a new API endpoint (e.g., POST /api/auth/login) to process login requests."
+  },
+  {
+    "agent": "backend_agent",
+    "description": "Implement server-side validation for incoming email and password data."
+  },
+  {
+    "agent": "backend_agent",
+    "description": "Implement the core authentication logic: fetch user from DB, and securely compare the provided password with the stored hash."
+  },
+  {
+    "agent": "backend_agent",
+    "description": "Generate and return a session token (e.g., JWT) upon successful authentication."
+  },
+  {
+    "agent": "backend_agent",
+    "description": "Implement rate limiting on the login endpoint to prevent brute-force attacks."
+  },
+  {
+    "agent": "frontend_agent",
+    "description": "Build the login page UI component with HTML, CSS, and JavaScript based on the UX/UI designs."
+  },
+  {
+    "agent": "frontend_agent",
+    "description": "Implement client-side validation and user feedback for the email and password input fields."
+  },
+  {
+    "agent": "frontend_agent",
+    "description": "Connect the login form to the backend authentication API endpoint."
+  },
+  {
+    "agent": "frontend_agent",
+    "description": "Handle the API response: on success, store the auth token and redirect to the user dashboard; on failure, display an error message."
+  },
+  {
+    "agent": "devops_agent",
+    "description": "Manage and securely inject environment variables (e.g., JWT secret, DB connection string) into the deployment environment."
+  },
+  {
+    "agent": "devops_agent",
+    "description": "Ensure the web server or ingress controller is configured to enforce HTTPS on all login-related traffic."
+  },
+  {
+    "agent": "qa_agent",
+    "description": "Create a detailed test plan covering all functional requirements, edge cases, and error conditions for the login feature."
+  },
+  {
+    "agent": "qa_agent",
+    "description": "Execute manual tests for successful login, login with invalid credentials, and UI responsiveness across major browsers."
+  },
+  {
+    "agent": "qa_agent",
+    "description": "Write automated end-to-end tests that simulate a user logging in to verify the entire flow."
+  },
+  {
+    "agent": "docs_agent",
+    "description": "Create API documentation for the new /api/auth/login endpoint, detailing the request body and possible responses."
+  },
+  {
+    "agent": "docs_agent",
+    "description": "Write a short user guide or FAQ entry explaining how a user can log into their account."
+  }
+]
+```
+=============================== warnings summary ===============================
+../../../../Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/_pytest/config/__init__.py:1474
+  /Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/_pytest/config/__init__.py:1474: PytestConfigWarning: Unknown config option: timeout
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+../../../../Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/_pytest/config/__init__.py:1474
+  /Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/_pytest/config/__init__.py:1474: PytestConfigWarning: Unknown config option: timeout_disable_debugger_detection
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+../../../../Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/_pytest/config/__init__.py:1474
+  /Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/_pytest/config/__init__.py:1474: PytestConfigWarning: Unknown config option: timeout_method
+  
+    self._warn_or_fail_if_strict(f"Unknown config option: {key}\n")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/unit/test_agent_communication.py::test_message_bus - Failed: Expected None, but test returned True. Did you mean to use `assert` instead of `return`?
+FAILED tests/unit/test_agent_communication.py::test_project_state - Failed: Expected None, but test returned True. Did you mean to use `assert` instead of `return`?
+FAILED tests/unit/test_agent_communication.py::test_agent_import - Failed: Expected None, but test returned True. Did you mean to use `assert` instead of `return`?
+FAILED tests/unit/test_cli.py::TestCLI::test_reset_command - AssertionError: 'Reset complete' not found in '🔄 Resetting framework state...\n✓ Cleared message queues\n✓ Removed state file\n✓ Cleared logs\n\n✅ Framework state reset successfully\n'
+FAILED tests/unit/test_cli.py::TestCLI::test_status_command - AssertionError: 2 != 0
+FAILED tests/unit/test_cli_scenarios.py::TestCLIScenarios::test_config_nested_operations - AssertionError: 2 != 0
+FAILED tests/unit/test_cli_scenarios.py::TestCLIScenarios::test_error_recovery - AssertionError: 'error' not found in "warning: failed to load config from /private/var/folders/pj/7j_fd4sx6rqd64p68p35d10m0000gn/t/tmp5ch2ta9e/tmps6x7rsu5/.maf-config.json: expecting value: line 1 column 13 (char 12)\nusing default configuration\n📊 multi-agent framework status\n   project: tmps6x7rsu5\n\n📬 message queues:\n\n📋 no features in progress (use 'maf trigger' to start)\n\n🤖 agent health check:\n   enabled agents: 9\n\n⚙️  configuration:\n   default mode: polling\n   default model: gemini\n   event bus: in_memory\n"
+FAILED tests/unit/test_cli_scenarios.py::TestCLIScenarios::test_full_workflow - AssertionError: 2 != 0
+FAILED tests/unit/test_cli_scenarios.py::TestCLIScenarios::test_invalid_json_handling - AssertionError: 'invalid' not found in "usage: cli config [options]\ntry 'cli config --help' for help.\n\nerror: got unexpected extra arguments (set test_array [1,2,3)\n"
+FAILED tests/unit/test_cli_scenarios.py::TestCLIScenarios::test_reinit_existing_project - AssertionError: 0 == 0
+FAILED tests/unit/test_simple_orchestrator.py::test_orchestrator - KeyError: 'test-123'
+============ 11 failed, 60 passed, 10 skipped, 3 warnings in 50.14s ============
